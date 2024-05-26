@@ -16,12 +16,12 @@ Note: microfrontends run in the following addresses:
 
 - Vue:
 
-* Test: localhost:3000
+Test: localhost:3000
 
 - Angular:
 
-* Header: localhost:6001
+Header: localhost:6001
 
 - React:
 
-* Post-lists: localhost:3002
+Post-lists: localhost:3002
