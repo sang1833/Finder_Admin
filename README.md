@@ -1,33 +1,39 @@
-# Finder admin
+## Finder Admin
 
-**Note:** I clone module federation config from Mai Trung Duc: [Blog](https://viblo.asia/p/microfrontend-module-federation-dua-microservices-den-voi-frontend-AZoJjXEEVY7), [Github](https://github.com/maitrungduc1410/viblo-microfrontend)
+This project is a clone of the module federation configuration by Mai Trung Duc. You can find more details on his [Blog](https://viblo.asia/p/microfrontend-module-federation-dua-microservices-den-voi-frontend-AZoJjXEEVY7) and [Github](https://github.com/maitrungduc1410/viblo-microfrontend).
 
-To start, first run `npm install` for **each** project
+## Getting Started
 
-Then for each project, open new terminal and run:
+Follow the steps below to set up the project:
 
-```
-npm start
-```
+1. Run `npm install` in each project directory.
 
-> ⚠️ Finally, access the app shell at `http://localhost:4200` to see result
+2. Open a new terminal for each project and execute `npm start`.
 
-Note: microfrontends run in the following addresses:
+3. Once all projects are running, navigate to `http://localhost:4200` to view the app shell.
 
-- App-shell: localhost:4200 
+## Microfrontends
 
-- Vue:
+The microfrontends are hosted at the following addresses:
 
-HelloWorld: localhost:3000 
-Signin: localhost:6002 
+### App-shell
 
-- Angular:
+- **Localhost:** `localhost:4200`
 
-HelloWorld: localhost:3001 
-Header: localhost:6001 
+### Vue
 
-- React:
+- **HelloWorld:** `localhost:3000`
+- **Signin:** `localhost:6002`
 
-HelloWorld: localhost:3002 
-Post-lists: localhost:6003 
-Chat: localhost:6005 
+### Angular
+
+- **HelloWorld:** `localhost:3001`
+- **Header:** `localhost:6001`
+
+### React
+
+- **HelloWorld:** `localhost:3002`
+- **Post-lists:** `localhost:6003`
+- **Chat:** `localhost:6005`
+
+Please ensure all microfrontends are running to experience the full functionality of the app.
