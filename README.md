@@ -14,20 +14,20 @@ npm start
 
 Note: microfrontends run in the following addresses:
 
-- App-shell: localhost:4200
+- App-shell: localhost:4200 
 
 - Vue:
 
-HelloWorld: localhost:3000
-Signin: localhost:6002
+HelloWorld: localhost:3000 
+Signin: localhost:6002 
 
 - Angular:
 
-HelloWorld: localhost:3001
-Header: localhost:6001
+HelloWorld: localhost:3001 
+Header: localhost:6001 
 
 - React:
-- 
-HelloWorld: localhost:3002
-Post-lists: localhost:6003
-Chat: localhost:6005
+
+HelloWorld: localhost:3002 
+Post-lists: localhost:6003 
+Chat: localhost:6005 
