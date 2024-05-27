@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
-  CanActivate,
+  CanActivateFn,
   Router,
   RouterStateSnapshot,
   UrlTree,
@@ -12,7 +12,7 @@ import { AuthService } from './app.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate {
+class PermissionsService {
   constructor(
     private readonly authService: AuthService,
     private readonly router: Router
@@ -34,3 +34,40 @@ export class AuthGuard implements CanActivate {
     return true;
   }
 }
+
+export const AuthGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+):
+  | Observable<boolean | UrlTree>
+  | Promise<boolean | UrlTree>
+  | boolean
+  | UrlTree => {
+  return inject(PermissionsService).canActivate(route, state);
+};
+
+// @Injectable({
+//   providedIn: 'root',
+// })
+// export class AuthGuard implements CanActivate {
+//   constructor(
+//     private readonly authService: AuthService,
+//     private readonly router: Router
+//   ) {}
+
+//   canActivate(
+//     route: ActivatedRouteSnapshot,
+//     state: RouterStateSnapshot
+//   ):
+//     | Observable<boolean | UrlTree>
+//     | Promise<boolean | UrlTree>
+//     | boolean
+//     | UrlTree {
+//     if (!this.authService.isLoggedIn()) {
+//       this.router.navigate(['/login']);
+
+//       return false;
+//     }
+//     return true;
+//   }
+// }

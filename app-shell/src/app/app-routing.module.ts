@@ -19,6 +19,7 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'posts',
@@ -32,7 +33,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'main',
+    redirectTo: 'dashboard',
   },
 ];
 
