@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { SidebarService } from '../app.service';
 import { filter } from 'rxjs/operators';
@@ -11,6 +11,8 @@ declare var require: any;
   styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarAppComponent {
+  @ViewChildren('comp') components!: QueryList<any>;
+
   avatar = require('@/assets/avatar.png');
   mainLogo = require('@/assets/mainLogo.png');
   isSidebarOpen = false;

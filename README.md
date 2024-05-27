@@ -24,4 +24,4 @@ Header: localhost:6001
 
 - React:
 
-Post-lists: localhost:3002
+Post-lists: localhost:6003

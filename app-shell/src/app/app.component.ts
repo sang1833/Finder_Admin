@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { SidebarService } from './app.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +7,4 @@ import { SidebarService } from './app.service';
 })
 export class AppComponent {
   title = 'viblo-module-federation';
-
-  constructor(readonly sidebarService: SidebarService) {}
 }

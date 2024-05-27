@@ -1,0 +1,18 @@
+<main>
+  <section class="sidebar_app">
+    <app-sidebar></app-sidebar>
+  </section>
+  <section
+    class="body_container"
+    [style.paddingLeft]="
+      (sidebarService.isSidebarOpen$ | async) ? '260px' : '72px'
+    "
+  >
+    <section>
+      <app-header></app-header>
+    </section>
+    <section class="content">
+      <router-outlet></router-outlet>
+    </section>
+  </section>
+</main>

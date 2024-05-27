@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 import PostsList from "@/components/Post/PostsList";
 import { level1s } from "dvhcvn";
@@ -28,11 +29,31 @@ const categories = [
   "Đồ vật khác"
 ];
 
+const approvedState = [
+  {
+    value: "ALL",
+    label: "Tất cả"
+  },
+  {
+    value: "NOT_YET",
+    label: "Chưa duyệt"
+  },
+  {
+    value: "ACCEPT",
+    label: "Đã duyệt"
+  },
+  {
+    value: "REJECT",
+    label: "Đã huỷ"
+  }
+];
+
 const PostResultList = () => {
   const [searchString, setSearchString] = useState<string>("");
   const [type, setType] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [city, setCity] = useState<string>("all");
+  const [approved, setApproved] = useState<string>("ALL");
 
   const resetFilters = () => {
     setSearchString("");
@@ -49,11 +70,12 @@ const PostResultList = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center gap-4">
+    <section className="flex flex-col justify-center items-center gap-4">
+      <div className="w-full flex justify-start">
+        <h1 className="py-4 font-bold text-2xl">Danh sách bài đăng</h1>
+      </div>
       <div className="w-full bg-white shadow-sm flex flex-col justify-center items-center border-2 border-slate-200 rounded-xl p-4 gap-4">
         <div className="w-full flex justify-between items-center">
-          <p className="font-semibold text-xl">Bộ lọc</p>
-
           <Button
             onClick={resetFilters}
             className="rounded-xl text-lg gap-2 bg-red-600 hover:bg-red-500"
@@ -61,6 +83,34 @@ const PostResultList = () => {
             <ChangeCircleOutlinedIcon />
             Xóa bộ lọc
           </Button>
+        </div>
+
+        <Separator className={cn("w-full bg-slate-200 my-2")} />
+        <div className="w-full h-full flex md:flex-row flex-col items-center gap-8">
+          <Label htmlFor="search" className="font-semibold text-lg ">
+            Lọc theo
+          </Label>
+          <ToggleGroup
+            value={approved}
+            type="single"
+            className="border rounded-lg"
+            onValueChange={(value) => setApproved(value)}
+          >
+            {approvedState.map((item, index) => (
+              <ToggleGroupItem
+                key={index}
+                value={item.value}
+                aria-label={`Toggle ${item.label}`}
+                className={
+                  approved === item.value
+                    ? "data-[state=on]:bg-black data-[state=on]:text-white"
+                    : ""
+                }
+              >
+                <p>{item.label}</p>
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
         </div>
 
         <Separator className={cn("w-full bg-slate-200 my-2")} />
@@ -150,7 +200,7 @@ const PostResultList = () => {
       </div>
 
       <PostsList />
-    </div>
+    </section>
   );
 };
 

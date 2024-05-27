@@ -1,5 +1,18 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class SidebarService {
+  private _isSidebarOpen = new BehaviorSubject<boolean>(false);
+  isSidebarOpen$ = this._isSidebarOpen.asObservable();
+
+  toggleSidebar() {
+    this._isSidebarOpen.next(!this._isSidebarOpen.value);
+  }
+}
 
 const users = [
   {
@@ -71,11 +84,44 @@ export class AppService {
 @Injectable({
   providedIn: 'root',
 })
-export class SidebarService {
-  private _isSidebarOpen = new BehaviorSubject<boolean>(false);
-  isSidebarOpen$ = this._isSidebarOpen.asObservable();
+export class AuthService {
+  // check if the user is logged in by checking the user in localStorage
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('user');
+  }
+}
 
-  toggleSidebar() {
-    this._isSidebarOpen.next(!this._isSidebarOpen.value);
+@Injectable({
+  providedIn: 'root',
+})
+export class CheckTokenService {
+  private apiUrl = 'http://localhost:5001/api/v1/auths/';
+
+  constructor(private http: HttpClient) {}
+
+  checkAndRefreshToken(): void {
+    const userItem = localStorage.getItem('user');
+    if (!userItem) return;
+
+    const user = JSON.parse(userItem);
+    if (!user || !user.refreshToken) return;
+
+    const now = new Date();
+    const refreshTokenExpirationDate = new Date(user.refreshTokenExpired);
+
+    // Check if the refreshToken has expired
+    if (now > refreshTokenExpirationDate) {
+      this.http
+        .get(`${this.apiUrl}refreshToken/${user.refreshToken}`)
+        .subscribe(
+          (response: any) => {
+            console.log('Token refreshed successfully');
+            localStorage.setItem('user', JSON.stringify(response.data.data));
+          },
+          (error) => {
+            console.error('Error refreshing token:', error);
+          }
+        );
+    }
   }
 }

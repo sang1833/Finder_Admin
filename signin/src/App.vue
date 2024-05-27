@@ -1,21 +1,14 @@
 <template>
-  <img alt="Vue logo" :src="vueLogo" />
-  <HelloWorld msg="Welcome to Your Vue.js App" />
+  <LoginView />
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-const vueLogo = require("./assets/logo.png");
+import LoginView from "./components/LoginView.vue";
 
 export default {
   name: "App",
   components: {
-    HelloWorld
-  },
-  data() {
-    return {
-      vueLogo
-    };
+    LoginView
   }
 };
 </script>
@@ -27,6 +20,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
 }
 </style>

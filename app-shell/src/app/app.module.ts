@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -13,6 +12,8 @@ import { AngularWrapperComponent } from './wrappers/angular-wrapper/angular-wrap
 import { HeaderAppComponent } from './head/header.component';
 import { SidebarAppComponent } from './sidebar/sidebar.component';
 import { PostAppComponent } from './post/post.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoginVueAppComponent } from './login-vue/login-vue.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,8 @@ import { PostAppComponent } from './post/post.component';
     HeaderAppComponent,
     SidebarAppComponent,
     PostAppComponent,
+    DashboardComponent,
+    LoginVueAppComponent,
   ],
   imports: [CommonModule, BrowserModule, AppRoutingModule, FormsModule],
   providers: [],
