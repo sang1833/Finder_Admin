@@ -1,6 +1,7 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
 import { loadRemoteModule } from '../utils/federation-utils';
-import { AppService } from '../app.service';
+import { AppService, AuthService } from '../app.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-vue',
@@ -17,7 +18,17 @@ export class LoginVueAppComponent {
     exposedModule: 'LoginVueAppLoader',
   };
 
-  constructor(readonly appService: AppService) {}
+  constructor(
+    readonly appService: AppService,
+    private readonly authService: AuthService,
+    private router: Router
+  ) {
+    if (this.authService.isLoggedIn()) {
+      // redirect to path dashboard
+      console.log('redirect to dashboard');
+      this.router.navigate(['/dashboard']);
+    }
+  }
 
   async ngAfterViewInit() {
     loadRemoteModule(this.LoginVueModule).then((module) => {

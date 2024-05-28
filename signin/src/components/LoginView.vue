@@ -18,7 +18,13 @@
           required
           class="input-field"
         />
-        <button type="submit" class="submit-button">Đăng nhập</button>
+        <button type="submit" class="submit-button" :disabled="isLoading">
+          <span v-if="isLoading" class="waiting">
+            <Loading class="load" />
+            Hãy đợi chút nhé...</span
+          >
+          <span v-else>Đăng nhập</span>
+        </button>
       </form>
     </div>
   </section>
@@ -26,16 +32,19 @@
 
 <script>
 import axios from "axios";
+import Loading from "./Loading.vue";
 
 export default {
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
+      isLoading: false
     };
   },
   methods: {
     async handleLogin() {
+      this.isLoading = true;
       try {
         const response = await axios.post(
           "http://localhost:5001/api/v1/auths/login",
@@ -51,8 +60,13 @@ export default {
       } catch (error) {
         console.error("Login failed:", error);
         // Handle login failure, e.g., show an error message
+      } finally {
+        this.isLoading = false;
       }
     }
+  },
+  components: {
+    Loading
   }
 };
 </script>
@@ -113,5 +127,11 @@ section {
 
 .submit-button:hover {
   background-color: #0056b3;
+}
+.waiting {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 </style>
