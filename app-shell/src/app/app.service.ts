@@ -85,9 +85,11 @@ export class AppService {
   providedIn: 'root',
 })
 export class AuthService {
+  user = localStorage.getItem('user');
+
   // check if the user is logged in by checking the user in localStorage
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('user');
+    return !!this.user;
   }
 }
 
