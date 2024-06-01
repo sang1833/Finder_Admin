@@ -10,6 +10,8 @@
   height: 100%;
   background-color: transparent;
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 header {
@@ -29,24 +31,38 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 5px 10px;
   gap: 10px;
 
   img {
     width: 46px;
     height: 46px;
     border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
   }
 
-  p {
-    font-size: 1.2rem;
+  .user {
+    font-size: 1rem;
+    padding: 0 10px;
+    margin: 0;
+    box-sizing: border-box;
+    margin-block-start: 0;
+  }
+  .mail {
     font-weight: 500;
+    color: #7a7a7a;
+  }
+  .name {
+    font-weight: 700;
     color: #000;
+    padding-bottom: 3px;
   }
 }
 
 button {
   padding: 8px 16px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 500;
   color: #fff;
   background-color: #a82828;
