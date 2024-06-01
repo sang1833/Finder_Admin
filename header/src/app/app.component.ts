@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import logo from '../assets/angular.png';
-import avatar from '../assets/avatar.png';
+import manAvatar from '../assets/manAvatar.jpeg';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,7 @@ import avatar from '../assets/avatar.png';
 })
 export class AppComponent {
   myLogo = logo;
-  myAvatar = avatar;
+  myAvatar = manAvatar;
 
   logOut() {
     // if localstorage have item user, it will call api http://localhost:5001/api/v1/auths/logout

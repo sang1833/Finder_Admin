@@ -2,6 +2,7 @@ const { ModuleFederationPlugin } = require("webpack").container;
 const deps = require("./package.json").dependencies;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
+const Dotenv = require("dotenv-webpack");
 
 module.exports = {
   entry: "./src/index",
@@ -42,7 +43,7 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        include: path.resolve(__dirname, "src"),
+        // include: path.resolve(__dirname, "src"),
         use: ["style-loader", "css-loader", "postcss-loader"]
       }
     ]
@@ -67,6 +68,7 @@ module.exports = {
           requiredVersion: deps["react-dom"]
         }
       }
-    })
+    }),
+    new Dotenv()
   ]
 };

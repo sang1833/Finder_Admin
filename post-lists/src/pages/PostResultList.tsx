@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
@@ -29,50 +29,118 @@ const categories = [
   "Đồ vật khác"
 ];
 
-const approvedState = [
-  {
-    value: "ALL",
-    label: "Tất cả"
-  },
-  {
-    value: "NOT_YET",
-    label: "Chưa duyệt"
-  },
-  {
-    value: "ACCEPT",
-    label: "Đã duyệt"
-  },
-  {
-    value: "REJECT",
-    label: "Đã huỷ"
+enum EnumApprove {
+  ACCEPT = "ACCEPT",
+  REJECT = "REJECT",
+  NOT_YET = "NOT_YET"
+}
+
+function reducer(state: any, action: any) {
+  if (action.type === "CHANGE_SEARCH_INFOR") {
+    return {
+      searchString: action.searchString,
+      postType: action.postType,
+      category: action.category,
+      city: action.city
+    };
+  } else if (action.type === "RESET") {
+    return {
+      searchString: "",
+      postType: "",
+      category: "",
+      city: "all"
+    };
   }
-];
+  throw Error("Error in reducer");
+}
 
 const PostResultList = () => {
+  const [approvedState, setApprovedState] = useState(EnumApprove.NOT_YET);
   const [searchString, setSearchString] = useState<string>("");
   const [type, setType] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [city, setCity] = useState<string>("all");
-  const [approved, setApproved] = useState<string>("ALL");
+  const [state, dispatch] = useReducer(reducer, {
+    searchString: "",
+    postType: "",
+    category: "",
+    city: "all"
+  });
 
   const resetFilters = () => {
     setSearchString("");
     setType("");
     setCategory("");
     setCity("all");
+    dispatch({
+      type: "RESET"
+    });
   };
 
   const handleSearch = () => {
-    console.log(searchString);
-    console.log(type);
-    console.log(category);
-    console.log(city);
+    dispatch({
+      type: "CHANGE_SEARCH_INFOR",
+      searchString: searchString,
+      postType: type,
+      category: category,
+      city: city
+    });
   };
 
   return (
     <section className="flex flex-col justify-center items-center gap-4">
       <div className="w-full flex justify-start">
         <h1 className="py-4 font-bold text-2xl">Danh sách bài đăng</h1>
+      </div>
+      <div>
+        <Separator className={cn("w-full bg-slate-200 my-2")} />
+        <div className="w-full h-full flex md:flex-row flex-col items-center gap-8">
+          <Label htmlFor="search" className="font-semibold text-lg ">
+            Trạng thái
+          </Label>
+          <ToggleGroup
+            value={approvedState}
+            type="single"
+            className="border rounded-lg"
+            onValueChange={(value) =>
+              setApprovedState(EnumApprove[value as keyof typeof EnumApprove])
+            }
+          >
+            <ToggleGroupItem
+              value={EnumApprove.ACCEPT}
+              aria-label={`Toggle ${EnumApprove.ACCEPT}`}
+              className={
+                approvedState === EnumApprove.ACCEPT
+                  ? "data-[state=on]:bg-black data-[state=on]:text-white"
+                  : ""
+              }
+            >
+              <p>Đã duyệt</p>
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value={EnumApprove.NOT_YET}
+              aria-label={`Toggle ${EnumApprove.NOT_YET}`}
+              className={
+                approvedState === EnumApprove.NOT_YET
+                  ? "data-[state=on]:bg-black data-[state=on]:text-white"
+                  : ""
+              }
+            >
+              <p>Chưa duyệt</p>
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value={EnumApprove.REJECT}
+              aria-label={`Toggle ${EnumApprove.REJECT}`}
+              className={
+                approvedState === EnumApprove.REJECT
+                  ? "data-[state=on]:bg-black data-[state=on]:text-white"
+                  : ""
+              }
+            >
+              <p>Đã huỷ</p>
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
       </div>
       <div className="w-full bg-white shadow-sm flex flex-col justify-center items-center border-2 border-slate-200 rounded-xl p-4 gap-4">
         <div className="w-full flex justify-between items-center">
@@ -83,34 +151,6 @@ const PostResultList = () => {
             <ChangeCircleOutlinedIcon />
             Xóa bộ lọc
           </Button>
-        </div>
-
-        <Separator className={cn("w-full bg-slate-200 my-2")} />
-        <div className="w-full h-full flex md:flex-row flex-col items-center gap-8">
-          <Label htmlFor="search" className="font-semibold text-lg ">
-            Lọc theo
-          </Label>
-          <ToggleGroup
-            value={approved}
-            type="single"
-            className="border rounded-lg"
-            onValueChange={(value) => setApproved(value)}
-          >
-            {approvedState.map((item, index) => (
-              <ToggleGroupItem
-                key={index}
-                value={item.value}
-                aria-label={`Toggle ${item.label}`}
-                className={
-                  approved === item.value
-                    ? "data-[state=on]:bg-black data-[state=on]:text-white"
-                    : ""
-                }
-              >
-                <p>{item.label}</p>
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
         </div>
 
         <Separator className={cn("w-full bg-slate-200 my-2")} />
@@ -137,11 +177,11 @@ const PostResultList = () => {
           >
             <p className="font-semibold text-lg">Loại tin</p>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Tin cần tìm" id="tin-can-tim" />
+              <RadioGroupItem value="LOST" id="tin-can-tim" />
               <Label htmlFor="tin-can-tim">Tin cần tìm</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Tin nhặt được" id="tin-nhat-duoc" />
+              <RadioGroupItem value="COLLECT" id="tin-nhat-duoc" />
               <Label htmlFor="tin-nhat-duoc">Tin nhặt được</Label>
             </div>
           </RadioGroup>
@@ -199,7 +239,13 @@ const PostResultList = () => {
         </div>
       </div>
 
-      <PostsList />
+      <PostsList
+        approvedState={approvedState}
+        searchString={state.searchString}
+        type={state.postType}
+        category={state.category}
+        city={state.city}
+      />
     </section>
   );
 };
