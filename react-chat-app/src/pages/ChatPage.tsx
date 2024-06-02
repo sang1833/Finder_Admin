@@ -1,12 +1,30 @@
-import React, { Children, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoSettingsOutline, IoSearch, IoFolderOpenOutline } from 'react-icons/io5';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { MdAttachFile } from 'react-icons/md';
 import { RiVideoOnLine } from 'react-icons/ri';
 import classNames from 'classnames';
+import { useQuery } from '@apollo/client';
+import { GET_USER_CONVERSATION } from '../graphql/queries';
+import { formatTimeToString } from '../utils';
+import { IConversationSummary, IConversations } from '@/type';
 
 const ChatPage = () => {
-  const [data, setData] = useState([]);
+  const [conversations, setConversations] = useState([]);
+
+  const { data } = useQuery(GET_USER_CONVERSATION, {
+    variables: {
+      page: 1,
+      pageSize: 10,
+    },
+  });
+
+  useEffect(() => {
+    const listConversation = data?.getUserConversations?.data?.listData;
+    console.log('listConversation: ');
+
+    setConversations(listConversation);
+  }, [data]);
 
   return (
     <div className="w-full h-[calc(100%-60px)] text-black flex">
@@ -36,7 +54,7 @@ const ChatPage = () => {
 
       {/* Right panel */}
       <div className="w-1/4 h-full bg-[#EFEFF4] border border-l-slate-300">
-        <ListConversation />
+        <ListConversation conversations={conversations} />
       </div>
     </div>
   );
@@ -99,7 +117,7 @@ const MessageBoxInput = () => {
   );
 };
 
-const ListConversation = () => {
+const ListConversation = ({ conversations }: IConversations) => {
   return (
     <div className="h-full px-4 py-4">
       {/* Filter conversation */}
@@ -108,51 +126,48 @@ const ListConversation = () => {
       </div>
       {/* List */}
       <ul className="h-[calc(100%-30px)] py-4 flex flex-col overflow-y-scroll">
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
-        <UserConversation />
+        {Array.isArray(conversations) &&
+          conversations.map((c) => (
+            <UserConversation
+              key={c.conversationId}
+              avatar={c.avatar}
+              conversationId={c.conversationId}
+              lastMessage={c.lastMessage}
+              lastTime={c.lastTime}
+              userName={c.userName}
+              userId={c.userName}
+            />
+          ))}
         <p className="text-center p-3">Xem thêm</p>
       </ul>
     </div>
   );
 };
 
-const UserConversation = () => {
+const UserConversation = ({
+  conversationId,
+  userId,
+  userName,
+  avatar,
+  lastMessage,
+  lastTime,
+}: IConversationSummary) => {
   return (
     <li className="flex justify-between items-center p-2 transition-colors hover:bg-white cursor-pointer active:opacity-80">
       <div className="flex items-center gap-3">
         {/* Avatar */}
         <div className="w-[34px] h-[34px] relative">
-          <img
-            className="rounded-full w-full h-full object-cover"
-            src="https://res.cloudinary.com/dwskvqnkc/image/upload/v1716223897/finder_storage/njwa9sri9qcrmuedooor.jpg"
-          />
+          <img className="rounded-full w-full h-full object-cover" src={avatar} />
           <span className="absolute rounded-full top-6 left-6 bg-[#08CE9E] w-[12px] h-[12px]"></span>
         </div>
         {/* Infor */}
         <div className="flex flex-col">
-          <h3 className="font-bold text-[14px]">Trần Quốc Thảo</h3>
-          <p className="font-normal text-[14px] text-zinc-500">I’m expected that the ...</p>
+          <h3 className="font-bold text-[14px]">{userName}</h3>
+          <p className="font-normal text-[14px] text-zinc-500">{lastMessage}</p>
         </div>
       </div>
       <div className="flex flex-col justify-between items-end gap-1">
-        <p className="text-[12px] font-semibold">10:30 PM</p>
+        <p className="text-[12px] font-semibold">{formatTimeToString(lastTime)}</p>
         <MessageBadge />
       </div>
     </li>
