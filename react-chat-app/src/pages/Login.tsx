@@ -25,6 +25,7 @@ const Login: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
+        localStorage.setItem('userId', data.data.id);
         localStorage.setItem('accessToken', data.data.accessToken);
         navigate('/chat');
       } else {
