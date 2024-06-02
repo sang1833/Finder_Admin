@@ -1,72 +1,73 @@
-const { ModuleFederationPlugin } = require("webpack").container;
-const deps = require("./package.json").dependencies;
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const path = require("path");
+const { ModuleFederationPlugin } = require('webpack').container;
+const deps = require('./package.json').dependencies;
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-  entry: "./src/index",
-  mode: "development",
+  entry: './src/index',
+  mode: 'development',
   devServer: {
     port: 6005,
     headers: {
-      "Access-Control-Allow-Origin": "*"
+      'Access-Control-Allow-Origin': '*',
     },
-    hot: true
+    hot: true,
+    historyApiFallback: true,
   },
   resolve: {
-    extensions: [".js", ".tsx", ".ts"],
+    extensions: ['.js', '.tsx', '.ts'],
 
     alias: {
-      "@": path.resolve(__dirname, "src/")
-    }
+      '@': path.resolve(__dirname, 'src/'),
+    },
   },
   output: {
-    publicPath: "auto"
+    publicPath: 'auto',
   },
   module: {
     rules: [
       {
         test: /\.(js|ts)x?$/,
-        loader: "babel-loader",
+        loader: 'babel-loader',
         exclude: /node_modules/,
         options: {
-          presets: ["@babel/preset-react", "@babel/preset-typescript"]
-        }
+          presets: ['@babel/preset-react', '@babel/preset-typescript'],
+        },
       },
       {
         test: /\.png$/,
         use: {
-          loader: "url-loader",
-          options: { limit: 8192 }
-        }
+          loader: 'url-loader',
+          options: { limit: 8192 },
+        },
       },
       {
         test: /\.css$/i,
-        include: path.resolve(__dirname, "src"),
-        use: ["style-loader", "css-loader", "postcss-loader"]
-      }
-    ]
+        include: path.resolve(__dirname, 'src'),
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./index.html"
+      template: './index.html',
     }),
     new ModuleFederationPlugin({
-      name: "post_app",
-      filename: "remoteEntry.js",
+      name: 'post_app',
+      filename: 'remoteEntry.js',
       exposes: {
-        PostAppLoader: "./src/loader.ts"
+        PostAppLoader: './src/loader.ts',
       },
       shared: {
         react: {
           singleton: true,
-          requiredVersion: deps.react
+          requiredVersion: deps.react,
         },
-        "react-dom": {
+        'react-dom': {
           singleton: true,
-          requiredVersion: deps["react-dom"]
-        }
-      }
-    })
-  ]
+          requiredVersion: deps['react-dom'],
+        },
+      },
+    }),
+  ],
 };
