@@ -2,7 +2,6 @@ const { ModuleFederationPlugin } = require('webpack').container;
 const deps = require('./package.json').dependencies;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const webpack = require('webpack');
 
 module.exports = {
   entry: './src/index',
@@ -51,10 +50,11 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      excludeChunks: ['chat_app'],
       template: './index.html',
     }),
     new ModuleFederationPlugin({
-      name: 'post_app',
+      name: 'chat_app',
       filename: 'remoteEntry.js',
       exposes: {
         PostAppLoader: './src/loader.ts',
@@ -70,6 +70,5 @@ module.exports = {
         },
       },
     }),
-    new webpack.HotModuleReplacementPlugin(),
   ],
 };
