@@ -9,3 +9,13 @@ export const SEND_MESSAGE = gql`
     }
   }
 `;
+
+export const UPDATE_LAST_READ_CONVERSATION = gql`
+  mutation updateLastReadConversation($conversationId: Int!, $lastSeen: Date!) {
+    updateLastReadConversation(bodyReq: { conversationId: $conversationId, lastSeen: $lastSeen }) {
+      status
+      statusCode
+      message
+    }
+  }
+`;

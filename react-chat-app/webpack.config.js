@@ -2,6 +2,7 @@ const { ModuleFederationPlugin } = require('webpack').container;
 const deps = require('./package.json').dependencies;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './src/index',
@@ -69,5 +70,6 @@ module.exports = {
         },
       },
     }),
+    new webpack.HotModuleReplacementPlugin(),
   ],
 };

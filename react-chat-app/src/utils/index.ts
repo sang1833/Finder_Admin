@@ -19,7 +19,7 @@ export function formatTimeToString(inputDateTime: string): string {
         return format(date, 'h:mm a');
       }
     } else if (isYesterday(date)) {
-      return `Hôm qua, ${format(date, 'h:mm a')}`;
+      return `Hôm qua`;
     } else {
       return format(date, 'dd/MM/yyyy');
     }

@@ -4,46 +4,24 @@ import { BsEmojiSmile } from 'react-icons/bs';
 import { MdAttachFile } from 'react-icons/md';
 import { RiVideoOnLine } from 'react-icons/ri';
 import classNames from 'classnames';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_USER_CONVERSATION, GET_DETAIL_CONVERSATION } from '../graphql/queries';
-import { SEND_MESSAGE } from '@/graphql/mutations';
+import { SEND_MESSAGE, UPDATE_LAST_READ_CONVERSATION } from '@/graphql/mutations';
 import { formatTimeToString } from '../utils';
-import { IConversationSummary, IConversations, IPropData } from '@/type';
-
-interface IMessage {
-  id: number;
-  createdDate: string;
-  isEdited: boolean;
-  message: string;
-}
-
-interface IMessageProps {
-  id: number;
-  createdDate: string;
-  isEdited: boolean;
-  message: string;
-  senderId: number;
-  currentUserId: number;
-}
-
-interface IClusMessage {
-  id: number;
-  createdDate: string;
-  senderId: number;
-  messages: IMessage[];
-}
-
-interface ISection {
-  id: number;
-  createdDate: string;
-  clusMessages: IClusMessage[];
-}
-
-interface IUserPartner {
-  id?: number;
-  displayName?: string;
-  avatar?: string;
-}
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
+import {
+  IChatClusMessageProps,
+  IClusMessage,
+  IConversationSummary,
+  IConversations,
+  IMessage,
+  IChatMessageProps,
+  IShowDetailConversationFnProps,
+  ISection,
+  IUserPartner,
+  IChatSectionProps,
+  IMessageBadgeProps,
+} from '@/type';
 
 const ChatPage = () => {
   const _userId = Number(localStorage.getItem('userId'));
@@ -53,12 +31,11 @@ const ChatPage = () => {
   const [userPartner, setUserPartner] = useState<IUserPartner | undefined>();
 
   //* get list conversation
-  const { data: resultListConversations } = useQuery(GET_USER_CONVERSATION, {
-    variables: {
-      page: 1,
-      pageSize: 10,
-    },
-  });
+  const [getListConversation, { data: resultListConversations }] = useLazyQuery(GET_USER_CONVERSATION);
+  useEffect(() => {
+    loadListConversation();
+  }, []);
+
   useEffect(() => {
     const listConversation = resultListConversations?.getUserConversations?.data?.listData;
     setConversations(listConversation);
@@ -75,8 +52,16 @@ const ChatPage = () => {
     setDetailConversation(reverseConversation);
   }, [resultDetailconversation]);
 
+  //* mutation update last read conversation
+  const [updateLastReadConversation, { data }] = useMutation(UPDATE_LAST_READ_CONVERSATION);
+
   //* handle show detail chat
-  const handleShowDetailConversation = ({ conversationId, userId, avatar, displayName }: IPropData) => {
+  const handleShowDetailConversation = async ({
+    conversationId,
+    userId,
+    avatar,
+    displayName,
+  }: IShowDetailConversationFnProps) => {
     //* set user partner
     const userPartnerData: IUserPartner = {
       avatar: avatar,
@@ -85,10 +70,28 @@ const ChatPage = () => {
     };
     setUserPartner(userPartnerData);
     setConversationActiveId(conversationId);
+    //* update last read conversation
+    await updateLastReadConversation({
+      variables: {
+        conversationId: conversationId,
+        lastSeen: new Date(),
+      },
+    });
+    loadListConversation();
+
     //* get detail conversation
     getDetailConversation({
       variables: {
         conversationId: conversationId,
+        page: 1,
+        pageSize: 10,
+      },
+    });
+  };
+
+  const loadListConversation = () => {
+    getListConversation({
+      variables: {
         page: 1,
         pageSize: 10,
       },
@@ -178,6 +181,12 @@ const ChatHeader = ({ avatar, displayName, id }: IUserPartner) => {
 const MessageBoxInput = ({ conversationId }: { conversationId?: number }) => {
   const [message, setMessage] = useState('');
   const [sendMessage, { data }] = useMutation(SEND_MESSAGE);
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+
+  //* handle pick emoji
+  const onEmojiClick = (emojiObject: EmojiClickData) => {
+    setMessage((prevMessage) => prevMessage + emojiObject.emoji);
+  };
 
   //* handle send message
   const handleSendMessage = (message: string) => {
@@ -195,10 +204,18 @@ const MessageBoxInput = ({ conversationId }: { conversationId?: number }) => {
   return (
     <div className="flex flex-col px-4">
       <div className="flex items-center justify-between py-2">
-        <div className="flex items-center gap-2">
-          <BsEmojiSmile className="text-[20px] text-[#2A477F]" />
-          <MdAttachFile className="text-[20px] text-[#2A477F]" />
-          <RiVideoOnLine className="text-[20px] text-[#2A477F]" />
+        <div className="flex items-center gap-2 relative">
+          {showEmojiPicker && (
+            <div className="absolute bottom-10">
+              <EmojiPicker onEmojiClick={onEmojiClick} />
+            </div>
+          )}
+          <BsEmojiSmile
+            className="text-[20px] text-[#2A477F] cursor-pointer hover:opacity-95 active:opacity-80"
+            onClick={() => setShowEmojiPicker((val) => !val)}
+          />
+          <MdAttachFile className="text-[20px] text-[#2A477F] cursor-pointer hover:opacity-95 active:opacity-80" />
+          <RiVideoOnLine className="text-[20px] text-[#2A477F] cursor-pointer hover:opacity-95 active:opacity-80" />
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
@@ -290,24 +307,27 @@ const UserConversation = ({
         </div>
       </div>
       <div className="flex flex-col justify-between items-end gap-1">
-        <p className="text-[12px] font-semibold">{formatTimeToString(lastTime)}</p>
+        <p className={classNames('text-[12px]', unreadCount > 0 ? 'font-semibold' : 'font-normal')}>
+          {formatTimeToString(lastTime)}
+        </p>
         <MessageBadge unreadCount={unreadCount} />
       </div>
     </li>
   );
 };
 
-const MessageBadge = ({ unreadCount }: { unreadCount: number }) => {
+const MessageBadge = ({ unreadCount }: IMessageBadgeProps) => {
   return unreadCount > 0 ? (
     <div className="w-[16px] h-[16px] rounded-full flex justify-center items-center bg-blue-700">
       <span className="text-white font-bold text-[11px]">{unreadCount}</span>
     </div>
   ) : (
-    <div className=""></div>
+    <div className="w-[16px] h-[16px]"></div>
   );
 };
 
-const ChatSection = ({ startTime, children }: { startTime: string; children: React.ReactNode }) => {
+//* Chat Section Component
+const ChatSection = ({ startTime, children }: IChatSectionProps) => {
   return (
     <div className="my-3">
       <p className="text-center text-[14px] text-[#363636] my-2">{formatTimeToString(startTime)}</p>
@@ -316,17 +336,8 @@ const ChatSection = ({ startTime, children }: { startTime: string; children: Rea
   );
 };
 
-const ChatClusMessage = ({
-  avatar,
-  senderId,
-  currentUserId,
-  children,
-}: {
-  senderId: number;
-  currentUserId: number;
-  avatar?: string;
-  children: React.ReactNode;
-}) => {
+//* Chat Clus_Message Component
+const ChatClusMessage = ({ avatar, senderId, currentUserId, children }: IChatClusMessageProps) => {
   return (
     <div className={classNames('flex gap-2 mb-4', senderId == currentUserId ? 'flex-row-reverse' : '')}>
       {/* Avatar */}
@@ -344,7 +355,8 @@ const ChatClusMessage = ({
   );
 };
 
-const ChatMessage = ({ id, createdDate, isEdited, message, currentUserId, senderId }: IMessageProps) => {
+//* Chat Message Component
+const ChatMessage = ({ id, createdDate, isEdited, message, currentUserId, senderId }: IChatMessageProps) => {
   return (
     <div
       className={classNames('py-1 px-2 rounded-sm w-fit ', currentUserId == senderId ? 'bg-[#EFEFF4]' : 'bg-[#e9e9e9]')}
