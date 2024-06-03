@@ -12,7 +12,8 @@ module.exports = {
     headers: {
       "Access-Control-Allow-Origin": "*"
     },
-    hot: true
+    hot: true,
+    historyApiFallback: true
   },
   resolve: {
     extensions: [".js", ".tsx", ".ts"],
@@ -22,7 +23,7 @@ module.exports = {
     }
   },
   output: {
-    publicPath: "auto"
+    publicPath: "http://localhost:6003/"
   },
   module: {
     rules: [
@@ -42,14 +43,14 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/i,
-        // include: path.resolve(__dirname, "src"),
+        test: /\.css$/,
         use: ["style-loader", "css-loader", "postcss-loader"]
       }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({
+      excludeChunks: ["post_app"],
       template: "./index.html"
     }),
     new ModuleFederationPlugin({

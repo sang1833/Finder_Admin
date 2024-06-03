@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,7 @@ import { level1s } from "dvhcvn";
 import { Button } from "@/components/ui/button";
 import ChangeCircleOutlinedIcon from "@mui/icons-material/ChangeCircleOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+// import { useNavigate } from "react-router-dom";
 
 const categories = [
   "Ví/Giấy tờ",
@@ -55,6 +56,8 @@ function reducer(state: any, action: any) {
 }
 
 const PostResultList = () => {
+  // const navigate = useNavigate();
+  // const currentURL = window.location.href;
   const [approvedState, setApprovedState] = useState(EnumApprove.NOT_YET);
   const [searchString, setSearchString] = useState<string>("");
   const [type, setType] = useState<string>("");
@@ -86,6 +89,13 @@ const PostResultList = () => {
       city: city
     });
   };
+
+  // useEffect(() => {
+  //   if (currentURL.includes("/dashboard/posts")) {
+  //     console.log("currentURL", currentURL);
+  //     navigate("/dashboard/posts");
+  //   }
+  // }, [currentURL, navigate]);
 
   return (
     <section className="flex flex-col justify-center items-center gap-4">

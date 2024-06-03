@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Pagination,
   PaginationContent,
@@ -7,7 +8,6 @@ import {
   PaginationNext,
   PaginationPrevious
 } from "@/components/ui/pagination";
-import React from "react";
 
 const ReactPagination = ({
   currentPage,

@@ -1,10 +1,10 @@
-const { ModuleFederationPlugin } = require('webpack').container;
-const deps = require('./package.json').dependencies;
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { ModuleFederationPlugin } = require("webpack").container;
+const deps = require("./package.json").dependencies;
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: './src/index',
-  mode: 'development',
+  entry: "./src/index",
+  mode: "development",
   devServer: {
     port: 3002,
     headers: {
@@ -13,55 +13,54 @@ module.exports = {
     hot: true
   },
   resolve: {
-    extensions: ['.js', '.tsx', '.ts'],
+    extensions: [".js", ".tsx", ".ts"]
   },
   output: {
-    publicPath: 'auto',
+    publicPath: "auto"
   },
   module: {
     rules: [
       {
         test: /\.(js|ts)x?$/,
-        loader: 'babel-loader',
+        loader: "babel-loader",
         exclude: /node_modules/,
         options: {
-          presets: ['@babel/preset-react', '@babel/preset-typescript'],
-        },
+          presets: ["@babel/preset-react", "@babel/preset-typescript"]
+        }
       },
       {
         test: /\.png$/,
         use: {
-          loader: 'url-loader',
-          options: { limit: 8192 },
-        },
+          loader: "url-loader",
+          options: { limit: 8192 }
+        }
       },
       {
         test: /\.css$/i,
-        use: ['style-loader',
-              'css-loader'],
-      },
-    ],
+        use: ["style-loader", "css-loader"]
+      }
+    ]
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./index.html",
+      template: "./index.html"
     }),
     new ModuleFederationPlugin({
-      name: 'react_app',
-      filename: 'remoteEntry.js',
+      name: "react_app",
+      filename: "remoteEntry.js",
       exposes: {
-        'ReactAppLoader': './src/loader.ts',
+        ReactAppLoader: "./src/loader.ts"
       },
-     shared: {
+      shared: {
         react: {
           singleton: true,
-          requiredVersion: deps.react,
+          requiredVersion: deps.react
         },
-        'react-dom': {
+        "react-dom": {
           singleton: true,
-          requiredVersion: deps['react-dom'],
-        },
-      },
-    }),
-  ],
+          requiredVersion: deps["react-dom"]
+        }
+      }
+    })
+  ]
 };

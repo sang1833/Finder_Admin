@@ -86,3 +86,23 @@ interface ItemType {
 interface PostCardProps {
   post: PostDetail | null;
 }
+
+interface CommentItemProps {
+  postId: number;
+  comment: Comment;
+  level: number;
+}
+
+interface Comment {
+  id: number;
+  parentCommentId: number;
+  postId: number;
+  senderId: number;
+  displayName: string;
+  avatar: string;
+  isEdited: boolean;
+  content: string;
+  createdDate: string;
+  updatedDate: string;
+  subComments: Comment[];
+}

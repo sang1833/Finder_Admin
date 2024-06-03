@@ -15,6 +15,7 @@ import Spinner from "../Spinner";
 import ReactPagination from "../ReactPagination";
 import EmptyImage from "@/assets/empty.png";
 import LoadingCard from "../LoadingCard";
+import { set } from "date-fns";
 
 enum EnumApprove {
   ACCEPT = "ACCEPT",
@@ -130,6 +131,16 @@ function PostsList(
 
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    setPage(1);
+  }, [
+    pageSize,
+    props.approvedState,
+    props.searchString,
+    props.type,
+    props.city
+  ]);
 
   useEffect(() => {
     handleGetAllPosts(
