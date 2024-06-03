@@ -57,7 +57,7 @@ module.exports = {
       name: 'chat_app',
       filename: 'remoteEntry.js',
       exposes: {
-        PostAppLoader: './src/loader.ts',
+        ChatAppLoader: './src/loader.ts',
       },
       shared: {
         react: {
