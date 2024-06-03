@@ -1,6 +1,7 @@
 const { ModuleFederationPlugin } = require('webpack').container;
 const deps = require('./package.json').dependencies;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
   entry: './src/index',
@@ -8,12 +9,17 @@ module.exports = {
   devServer: {
     port: 6005,
     headers: {
-      "Access-Control-Allow-Origin": "*"
+      'Access-Control-Allow-Origin': '*',
     },
-    hot: true
+    hot: true,
+    historyApiFallback: true,
   },
   resolve: {
     extensions: ['.js', '.tsx', '.ts'],
+
+    alias: {
+      '@': path.resolve(__dirname, 'src/'),
+    },
   },
   output: {
     publicPath: 'auto',
@@ -37,22 +43,23 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ['style-loader',
-              'css-loader'],
+        include: path.resolve(__dirname, 'src'),
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./index.html",
+      excludeChunks: ['chat_app'],
+      template: './index.html',
     }),
     new ModuleFederationPlugin({
-      name: 'react_app',
+      name: 'chat_app',
       filename: 'remoteEntry.js',
       exposes: {
-        'ReactAppLoader': './src/loader.ts',
+        PostAppLoader: './src/loader.ts',
       },
-     shared: {
+      shared: {
         react: {
           singleton: true,
           requiredVersion: deps.react,
