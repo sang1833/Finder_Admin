@@ -6,3 +6,4 @@ export { ChatSection } from './ChatSection';
 export { UserConversation } from './UserConversation';
 export { ChatHeader } from './ChatHeader';
 export { MessageBoxInput } from './MessageBoxInput';
+export { LoadingIcon } from './LoadingIcon';
