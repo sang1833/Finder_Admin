@@ -59,3 +59,64 @@ export const GET_POST_BY_ID = gql`
     }
   }
 `;
+
+export const GET_COMMENTS = gql`
+  query GetComments($postId: Int!, $filters: FilterPostCommentInput) {
+    getComments(postId: $postId, filters: $filters) {
+      status
+      statusCode
+      data {
+        listData {
+          id
+          parentCommentId
+          postId
+          senderId
+          displayName
+          avatar
+          isEdited
+          content
+          createdDate
+          updatedDate
+          subComments {
+            id
+            parentCommentId
+            postId
+            senderId
+            displayName
+            avatar
+            isEdited
+            content
+            createdDate
+            updatedDate
+            subComments {
+              id
+              parentCommentId
+              postId
+              senderId
+              displayName
+              avatar
+              isEdited
+              content
+              createdDate
+              updatedDate
+              subComments {
+                id
+                parentCommentId
+                postId
+                senderId
+                displayName
+                avatar
+                isEdited
+                content
+                createdDate
+                updatedDate
+              }
+            }
+          }
+        }
+        totalCount
+      }
+      message
+    }
+  }
+`;

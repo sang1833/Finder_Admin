@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
-
-import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import PostCard from "../components/Post/Card/PostCard";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_POST_BY_ID } from "@/services/graphql/queries";
 import LargeSpinner from "../components/LargeSpinner";
+import { ArrowBigLeftDash } from "lucide-react";
 
 const PostDetails = () => {
+  const navigate = useNavigate();
   const { postId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<PostDetail | null>(null);
@@ -59,23 +58,21 @@ const PostDetails = () => {
     }
   }, [postId]);
 
+  function handleBackTOList() {
+    navigate("/dashboard/posts");
+  }
+
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <Alert
-        className={cn("rounded-xl bg-red-400 text-white border mb-[20px]")}
-      >
-        <WarningAmberOutlinedIcon style={{ color: "white" }} />
-        <AlertTitle>Chú ý !</AlertTitle>
-
-        <div className="flex gap-1">
-          <AlertDescription>Cảnh báo</AlertDescription>
-          <AlertDescription>
-            <a href="#" className="underline font-medium">
-              lừa đảo
-            </a>
-          </AlertDescription>
-        </div>
-      </Alert>
+      <div className="w-full flex justify-start items-start">
+        <button
+          className="bg-transparent p-3 flex justify-center items-center"
+          onClick={handleBackTOList}
+        >
+          <ArrowBigLeftDash className="w-10 h-10 " />
+          <p className="font-bold">Quay lại</p>
+        </button>
+      </div>
 
       {isLoading ? (
         <div className="w-full flex justify-center items-center">
