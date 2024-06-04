@@ -5,6 +5,7 @@ import { AuthGuard } from './auth.guard';
 import { PostAppComponent } from './post/post.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginVueAppComponent } from './login-vue/login-vue.component';
+import { ChatAppComponent } from './chat/chat.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,12 @@ const routes: Routes = [
       {
         path: 'posts',
         component: PostAppComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'chat',
+        component: ChatAppComponent,
+        canActivate: [AuthGuard],
       },
       {
         path: '**',
@@ -31,6 +38,7 @@ const routes: Routes = [
       },
     ],
   },
+
   {
     path: '**',
     redirectTo: 'dashboard',

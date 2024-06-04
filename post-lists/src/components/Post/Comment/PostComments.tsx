@@ -16,7 +16,7 @@ import CommentItem from "./CommentItem";
 
 const PostComments = () => {
   const { postId } = useParams();
-  // const signedInUser = useAtomValue(signedInUserAtomWithPersistence);
+  // const signedInUser = useAtomValue( AtomWithPersistence);
   const signedInUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   const [isLoading, setIsLoading] = useState(false);

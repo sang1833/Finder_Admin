@@ -26,23 +26,25 @@ interface PaginationProps {
 
 // Other Interfaces
 interface SignedInUser {
-  accessToken: string;
-  accessTokenExpired: Date;
-  refreshToken: string;
-  refreshTokenExpired: Date;
-  expired: Date;
-  avatar: string;
-  displayName: string;
-  email: string;
-  gender: boolean;
-  phone: string;
-  birthDate: Date;
-  address: string;
+  accessToken?: string;
+  accessTokenExpired?: string;
+  address?: string | null;
+  avatar?: string;
+  birthDate?: string | null;
+  displayName?: string;
+  email?: string;
+  gender?: boolean;
+  id?: number;
+  lastLogin?: string;
+  phone?: string;
+  refreshToken?: string;
+  refreshTokenExpired?: string;
+  role?: string;
 }
 
 interface Post {
   id: number;
-  approved: boolean;
+  approved: string;
   createdDate: string;
   description: string;
   fileName: string;
@@ -52,7 +54,71 @@ interface Post {
   postType: string;
   title: string;
   updatedDate: string;
+  viewCount: number;
+  totalComments: number;
 }
+
+interface PostWithFilter {
+  id: number;
+  title: string;
+  postType: string;
+  location: string;
+  locationDetail: string;
+  description: string;
+  approved: string;
+  viewCount: number;
+  totalComments: number;
+  fileName: string;
+  filePath: string;
+  createdDate: Date;
+  updatedDate: Date;
+}
+
+interface PostsListProps {
+  isLoading: boolean;
+  posts: PostWithFilter[];
+}
+
+interface PostItemCardProps {
+  post: PostWithFilter;
+}
+
+interface ResultOFPostI {
+  listData: Post[];
+  totalCount: number;
+}
+
+/*
+query Data($getPostByIdId: Int!) {
+  getPostById(id: $getPostByIdId) {
+    data {
+      viewCount
+      updatedDate
+      totalComments
+      title
+      location
+      postType
+      locationDetail
+      itemTypes {
+        id
+        name
+      }
+      images {
+        filePath
+        fileName
+      }
+      id
+      description
+      createdDate
+      contactPhone
+      authorId
+      authorAvatar
+      approved
+      authorDisplayName
+    }
+  }
+}
+*/
 
 interface PostDetail {
   id: number;
@@ -71,6 +137,7 @@ interface PostDetail {
   updatedDate: Date;
   viewCount: number;
   totalComments: number;
+  approved: string;
 }
 
 interface PostImage {
@@ -85,6 +152,8 @@ interface ItemType {
 
 interface PostCardProps {
   post: PostDetail | null;
+  isReset?: boolean;
+  setIsReset: (value: boolean) => void;
 }
 
 interface CommentItemProps {

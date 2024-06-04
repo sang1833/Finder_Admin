@@ -12,6 +12,7 @@ const PostDetails = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [isReset, setIsReset] = useState(false);
   const [post, setPost] = useState<PostDetail | null>(null);
   const [getPostDetails] = useLazyQuery(GET_POST_BY_ID);
 
@@ -41,7 +42,8 @@ const PostDetails = () => {
           createdDate: new Date(resultData.createdDate),
           updatedDate: new Date(resultData.updatedDate),
           viewCount: resultData.viewCount,
-          totalComments: resultData.totalComments
+          totalComments: resultData.totalComments,
+          approved: resultData.approved
         };
 
         setPost(pData);
@@ -56,9 +58,9 @@ const PostDetails = () => {
     if (postId) {
       handleGetPostDetails();
     }
-  }, [postId]);
+  }, [postId, isReset]);
 
-  function handleBackTOList() {
+  function handleBackToList() {
     navigate("/dashboard/posts");
   }
 
@@ -67,7 +69,7 @@ const PostDetails = () => {
       <div className="w-full flex justify-start items-start">
         <button
           className="bg-transparent p-3 flex justify-center items-center"
-          onClick={handleBackTOList}
+          onClick={handleBackToList}
         >
           <ArrowBigLeftDash className="w-10 h-10 " />
           <p className="font-bold">Quay lại</p>
@@ -79,7 +81,7 @@ const PostDetails = () => {
           <LargeSpinner />
         </div>
       ) : (
-        <PostCard post={post} />
+        <PostCard post={post} isReset={isReset} setIsReset={setIsReset} />
       )}
     </div>
   );
