@@ -1,4 +1,10 @@
 //* PROPS
+
+export interface IMessageBoxInputProps {
+  conversationId?: number;
+  onReloadConversation: () => void;
+}
+
 export interface IShowDetailConversationFnProps {
   conversationId: number;
   userId: number;

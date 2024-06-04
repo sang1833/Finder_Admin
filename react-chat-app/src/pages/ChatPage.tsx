@@ -50,20 +50,7 @@ const ChatPage = () => {
 
   // load detail conversation
   useEffect(() => {
-    const loadFirstDetailConversation = async () => {
-      if (conversationActiveId > 0) {
-        const sections: ISection[] = await fetchDetailConversation(conversationActiveId, 1);
-        if (!(sections.length > 0)) {
-          setHasMoreSection(false);
-        } else {
-          const newSections = [...sections];
-          setDetailConversationData(newSections);
-          setHasMoreSection(true);
-          setPageNumber(1);
-        }
-      }
-    };
-    loadFirstDetailConversation();
+    reloadDetailConversation(conversationActiveId);
   }, [conversationActiveId]);
 
   // register chat socket
@@ -131,6 +118,21 @@ const ChatPage = () => {
   const reloadListConversations = async () => {
     const newList = await fetchListConversations();
     setConversations(newList);
+  };
+
+  // reload detail conversation
+  const reloadDetailConversation = async (conversationId: number) => {
+    if (conversationId > 0) {
+      const sections: ISection[] = await fetchDetailConversation(conversationId, 1);
+      if (!(sections.length > 0)) {
+        setHasMoreSection(false);
+      } else {
+        const newSections = [...sections];
+        setDetailConversationData(newSections);
+        setHasMoreSection(true);
+        setPageNumber(1);
+      }
+    }
   };
 
   // update last read conversation
@@ -228,19 +230,16 @@ const ChatPage = () => {
         </div>
         {/* Write Box */}
         <div className="h-[120px] bg-[#EFEFF4] border border-b-slate-300">
-          <MessageBoxInput conversationId={conversationActiveId} />
+          <MessageBoxInput
+            conversationId={conversationActiveId}
+            onReloadConversation={() => reloadDetailConversation(conversationActiveId)}
+          />
         </div>
       </div>
 
       {/* Right panel */}
       <div className="w-1/4 h-full bg-[#EFEFF4] border border-l-slate-300">
-        {isLoadingConversations ? (
-          <div className="">
-            <LoadingIcon showLoadingText={true} />
-          </div>
-        ) : (
-          <ListConversation conversations={conversations} onClickChildren={handleShowDetailConversation} />
-        )}
+        <ListConversation conversations={conversations} onClickChildren={handleShowDetailConversation} />
       </div>
     </div>
   );

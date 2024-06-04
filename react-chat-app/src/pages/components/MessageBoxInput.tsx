@@ -1,31 +1,48 @@
 import { SEND_MESSAGE } from '@/graphql/mutations';
+import { IMessageBoxInputProps } from '@/type';
 import { useMutation } from '@apollo/client';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
-import React, { useState } from 'react';
+import React, { KeyboardEvent, useState } from 'react';
 import { BsEmojiSmile } from 'react-icons/bs';
 import { MdAttachFile } from 'react-icons/md';
 import { RiVideoOnLine } from 'react-icons/ri';
 
-export const MessageBoxInput = ({ conversationId }: { conversationId?: number }) => {
+export const MessageBoxInput = ({ conversationId, onReloadConversation }: IMessageBoxInputProps) => {
   const [message, setMessage] = useState('');
-  const [sendMessage, { data }] = useMutation(SEND_MESSAGE);
+  const [enterToSend, setEnterToSend] = useState<boolean>(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+  const [sendMessage] = useMutation(SEND_MESSAGE);
 
-  //* handle pick emoji
+  //* API
+  // send message
+  const postSendMessage = async (conversationId: number, message: string) => {
+    await sendMessage({
+      variables: {
+        conversationId: conversationId,
+        message: message,
+      },
+    });
+  };
+
+  //* FUNCTION
+  // handle pick emoji
   const onEmojiClick = (emojiObject: EmojiClickData) => {
     setMessage((prevMessage) => prevMessage + emojiObject.emoji);
   };
 
-  //* handle send message
-  const handleSendMessage = (message: string) => {
+  // handle send message
+  const handleSendMessage = async (message: string) => {
     if (conversationId && message.trim() != '') {
-      sendMessage({
-        variables: {
-          conversationId: conversationId,
-          message: message,
-        },
-      });
       setMessage('');
+      await postSendMessage(conversationId, message);
+      onReloadConversation();
+    }
+  };
+
+  // handle press Enter
+  const handlePressEnterSendMessage = async (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key == 'Enter' && !e.shiftKey && enterToSend) {
+      await handleSendMessage(message);
     }
   };
 
@@ -47,7 +64,13 @@ export const MessageBoxInput = ({ conversationId }: { conversationId?: number })
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <input className="size-4" type="checkbox" name="press-enter" id="press-enter" />
+            <input
+              className="size-4"
+              type="checkbox"
+              name="press-enter"
+              id="press-enter"
+              onChange={(e) => setEnterToSend(e.target.checked)}
+            />
             <span className="text-[14px]">Nhấn Enter để gửi</span>
           </div>
           <button
@@ -66,6 +89,7 @@ export const MessageBoxInput = ({ conversationId }: { conversationId?: number })
         id="chat-box"
         onChange={(e) => setMessage(e.target.value)}
         value={message}
+        onKeyDown={(e) => handlePressEnterSendMessage(e)}
       />
     </div>
   );
