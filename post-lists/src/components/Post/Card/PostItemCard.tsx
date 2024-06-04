@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Card,
   CardContent,
@@ -7,14 +8,32 @@ import {
   CardTitle
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 
-const tempTitle =
-  "Ngày 15/9 trên đường đi học về mình đi qua cầu Định Công - Hà Nội. Mình có nhặt đc chùm chìa khoá này trên nối rẽ lên cầu.";
-const tempContact = "Liên hệ sđt 0965024155 để nhận chùm chìa khoá này ạ.";
+const PostItemCard = ({ post }: PostItemCardProps) => {
+  const navigate = useNavigate();
 
-const PostItemCard = () => {
+  let approvalText = {
+    text: "",
+    color: ""
+  };
+  switch (post?.approved) {
+    case null:
+      approvalText.text = "Chưa duyệt";
+      approvalText.color = "text-yellow-500 border border-yellow-500";
+      break;
+    case "ACCEPT":
+      approvalText.text = "Đã duyệt";
+      approvalText.color = "text-green-700 border border-green-700";
+      break;
+    case "REJECT":
+      approvalText.text = "Từ chối";
+      approvalText.color = "text-red-500 border border-red-500";
+      break;
+  }
+
   return (
     <Card
       className={cn(
@@ -23,27 +42,39 @@ const PostItemCard = () => {
     >
       <div className="md:w-2/12 sm:w-4/12 flex justify-center items-center overflow-hidden cursor-pointer rounded-tl-xl sm:rounded-bl-xl sm:rounded-tr-none rounded-bl-none rounded-tr-xl">
         <img
-          src="https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60"
-          alt="postImage"
+          src={
+            post.filePath
+              ? post.filePath
+              : "https://cdn.vectorstock.com/i/preview-1x/39/63/no-photo-camera-sign-vector-3213963.jpg"
+          }
+          alt={post.fileName ? post.fileName : "no-image"}
           loading="lazy"
-          className="object-cover w-full h-full hover:scale-125 duration-300"
+          className="object-cover w-full h-[200px] hover:scale-125 duration-300"
+          onClick={() => navigate("post-details/" + post.id)}
         />
       </div>
       <div className="md:w-10/12 sm:w-8/12 justify-center items-center">
         <CardHeader>
           <CardTitle
+            onClick={() => navigate("post-details/" + post.id)}
             className={cn(
-              "cursor-pointer hover:text-green-700 lg:text-xl text-base"
+              "cursor-pointer hover:text-slate-600 lg:text-xl text-base"
             )}
           >
-            Nhặt được ví và một số giấy tờ tên Đỗ Thành Trung
+            {post.title ? post.title : "Không có tiêu đề"}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="lg:text-base text-sm">
-            {(tempTitle + " " + tempContact).length > 150
-              ? (tempTitle + " " + tempContact).substring(0, 150) + "..."
-              : tempTitle + " " + tempContact}
+            {post.description ? (
+              <>
+                {post.description.length > 150
+                  ? post.description.substring(0, 150) + "..."
+                  : post.description}
+              </>
+            ) : (
+              "Không có mô tả"
+            )}
           </p>
         </CardContent>
         <CardFooter
@@ -54,12 +85,33 @@ const PostItemCard = () => {
           <div className="flex justify-center items-center">
             <LocationOnOutlinedIcon />
             <p className="font-medium lg:text-base text-sm">
-              Lâm Đồng , Thành phố Đà Lạt
+              {post.locationDetail
+                ? post.locationDetail
+                : "Khu vực chưa được cung cấp"}
             </p>
           </div>
 
-          <div className="flex justify-center items-center">
-            <p className="font-semibold lg:text-base text-sm">Tin nhặt được</p>
+          <div className="flex flex-col justify-end">
+            <div className="min-[1024px]:px-2 max-[1024px]:px-4 py-2 flex text-center justify-end items-center">
+              <span
+                className={`text-xs font-semibold rounded-full p-1 ${approvalText.color}`}
+              >
+                {approvalText.text}
+              </span>
+            </div>
+            <div className="flex justify-center items-center">
+              <p className="font-semibold lg:text-base text-sm">
+                {post.postType ? (
+                  <>
+                    {post.postType === "COLLECT"
+                      ? "Tin nhặt được"
+                      : "Tin cần tìm"}
+                  </>
+                ) : (
+                  "Loại tin không xác định"
+                )}
+              </p>
+            </div>
           </div>
         </CardFooter>
       </div>

@@ -8,6 +8,25 @@ export default function ImageCard({ post }: ImageCardProps) {
     navigate(`/post-details/${post.id}`);
   };
 
+  let approvalText = {
+    text: "",
+    color: ""
+  };
+  switch (post.approved) {
+    case null:
+      approvalText.text = "Chưa duyệt";
+      approvalText.color = "text-yellow-500 border border-yellow-500";
+      break;
+    case "ACCEPT":
+      approvalText.text = "Đã duyệt";
+      approvalText.color = "text-green-700 border border-green-700";
+      break;
+    case "REJECT":
+      approvalText.text = "Từ chối";
+      approvalText.color = "text-red-500 border border-red-500";
+      break;
+  }
+
   return (
     <div className="rounded-[8px] overflow-hidden shadow-md">
       <div className="w-full flex justify-center items-center lg:[200px] md:h-[180px] h-[160px] overflow-hidden">
@@ -41,15 +60,11 @@ export default function ImageCard({ post }: ImageCardProps) {
         </span>
       </div>
       <div className="min-[1024px]:px-2 max-[1024px]:px-4 py-2 w-full flex text-center justify-center items-center">
-        {post.approved ? (
-          <span className="text-xs font-semibold text-green-700 border border-green-700 rounded-full p-1">
-            Đã duyệt
-          </span>
-        ) : (
-          <span className="text-xs font-semibold text-red-500 border border-red-500 rounded-full p-1">
-            Chưa duyệt
-          </span>
-        )}
+        <span
+          className={`text-xs font-semibold rounded-full p-1 ${approvalText.color}`}
+        >
+          {approvalText.text}
+        </span>
       </div>
     </div>
   );

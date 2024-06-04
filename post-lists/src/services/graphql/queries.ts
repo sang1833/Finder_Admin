@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const GET_POST_WITH_FILTER = gql`
+export const GET_POST_WITH_FILTER_ADMIN = gql`
   query GetPostWithFilter($filters: AdminFilterPostInput!) {
     adminGetPostWithFilter(filters: $filters) {
       status
@@ -17,6 +17,53 @@ export const GET_POST_WITH_FILTER = gql`
           locationDetail
           postType
           title
+          updatedDate
+        }
+        totalCount
+      }
+      message
+    }
+  }
+`;
+
+export const GET_POST_WITH_FILTER = gql`
+  query GetPostWithFilter($filters: FilterPostInput) {
+    getPostWithFilter(filters: $filters) {
+      status
+      statusCode
+      data {
+        listData {
+          id
+          title
+          postType
+          location
+          locationDetail
+          description
+          approved
+          viewCount
+          totalComments
+          fileName
+          filePath
+          createdDate
+          updatedDate
+        }
+        totalCount
+      }
+      message
+    }
+  }
+`;
+
+export const GET_ITEM_TYPE_WITH_FILTER = gql`
+  query GetItemTypeWithFilter($filters: FilterItemTypeInput) {
+    getItemTypeWithFilter(filters: $filters) {
+      status
+      statusCode
+      data {
+        listData {
+          id
+          name
+          createdDate
           updatedDate
         }
         totalCount
@@ -54,6 +101,7 @@ export const GET_POST_BY_ID = gql`
         updatedDate
         viewCount
         totalComments
+        approved
       }
       message
     }
