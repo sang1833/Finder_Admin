@@ -96,8 +96,7 @@ const ChatPage = () => {
       fetchPolicy: 'network-only',
     });
     const sections: ISection[] = data?.getDetailConversation?.data?.listData;
-    const sectionReverse: ISection[] = Array.isArray(sections) ? [...sections].reverse() : sections;
-    return sectionReverse;
+    return sections;
   };
 
   // fetch list conversation of user
@@ -120,7 +119,10 @@ const ChatPage = () => {
     if (!(newSections.length > 0)) {
       setHasMoreSection(false);
     } else {
-      setDetailConversationData((prevSections) => [...prevSections, ...newSections]);
+      setDetailConversationData((prevSections) => {
+        const data = [...prevSections, ...newSections];
+        return data;
+      });
       setPageNumber(page);
     }
   };
