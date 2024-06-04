@@ -21,7 +21,7 @@ const ChatPage = () => {
   const _userId = Number(localStorage.getItem('userId'));
   const _PAGE_SIZE: number = 10;
   const [conversations, setConversations] = useState([]);
-  const [conversationActiveId, setConversationActiveId] = useState<number>(6);
+  const [conversationActiveId, setConversationActiveId] = useState<number>(0);
   const [detailConversationData, setDetailConversationData] = useState<ISection[]>([]);
   const [hasMoreSection, setHasMoreSection] = useState(true);
   const [userPartner, setUserPartner] = useState<IUserPartner | undefined>();
@@ -30,23 +30,41 @@ const ChatPage = () => {
 
   //* API QUERY
   // get list conversation
-  const [getListConversation, { data: resultListConversations }] = useLazyQuery(GET_USER_CONVERSATION);
+  const [getListConversation, { loading: isLoadingConversations }] = useLazyQuery(GET_USER_CONVERSATION);
   useEffect(() => {
     fetchListConversations();
   }, []);
 
   // get detail chat
-  const [getDetailConversation, { data: resultDetailconversation }] = useLazyQuery(GET_DETAIL_CONVERSATION);
+  const [getDetailConversation, { loading: isLoadingSections }] = useLazyQuery(GET_DETAIL_CONVERSATION);
 
   //* API MUTATION
   // mutation update last read conversation
-  const [updateLastReadConversation, { data }] = useMutation(UPDATE_LAST_READ_CONVERSATION);
+  const [updateLastReadConversation] = useMutation(UPDATE_LAST_READ_CONVERSATION);
 
   //* USE EFFECT
   // load list conversation
   useEffect(() => {
     reloadListConversations();
   }, []);
+
+  // load detail conversation
+  useEffect(() => {
+    const loadFirstDetailConversation = async () => {
+      if (conversationActiveId > 0) {
+        const sections: ISection[] = await fetchDetailConversation(conversationActiveId, 1);
+        if (!(sections.length > 0)) {
+          setHasMoreSection(false);
+        } else {
+          const newSections = [...sections];
+          setDetailConversationData(newSections);
+          setHasMoreSection(true);
+          setPageNumber(1);
+        }
+      }
+    };
+    loadFirstDetailConversation();
+  }, [conversationActiveId]);
 
   // register chat socket
   useEffect(() => {
@@ -95,19 +113,6 @@ const ChatPage = () => {
     return listConversations;
   };
 
-  // load first detail conversation data
-  const loadFirstConversationData = async (conversationId: number) => {
-    const page = 1;
-    const sections: ISection[] = await fetchDetailConversation(conversationId, page);
-    if (!(sections.length > 0)) {
-      setHasMoreSection(false);
-    } else {
-      setDetailConversationData([...sections]);
-      setPageNumber(page);
-      setHasMoreSection(true);
-    }
-  };
-
   // load more detail conversation data
   const loadMoreConversationData = async () => {
     const page = pageNumber + 1;
@@ -152,14 +157,11 @@ const ChatPage = () => {
       displayName: displayName,
       id: userId,
     };
+    //* reload new conversation
     setUserPartner(userPartnerData);
     setConversationActiveId(conversationId);
-    //* update last read
     updateLastReadNow(conversationId);
-    //* reload list conversation
     reloadListConversations();
-    //* get detail conversation
-    loadFirstConversationData(conversationId);
   };
 
   return (
@@ -190,9 +192,9 @@ const ChatPage = () => {
             }
           >
             {Array.isArray(detailConversationData) &&
-              detailConversationData.map((section: ISection) => {
+              detailConversationData.map((section: ISection, index) => {
                 return (
-                  <ChatSection startTime={section.createdDate} key={section.id}>
+                  <ChatSection startTime={section.createdDate} key={index}>
                     {Array.isArray(section?.clusMessages) &&
                       section.clusMessages.map((clusMsg: IClusMessage) => {
                         return (
@@ -230,7 +232,13 @@ const ChatPage = () => {
 
       {/* Right panel */}
       <div className="w-1/4 h-full bg-[#EFEFF4] border border-l-slate-300">
-        <ListConversation conversations={conversations} onClickChildren={handleShowDetailConversation} />
+        {isLoadingConversations ? (
+          <div className="">
+            <LoadingIcon showLoadingText={true} />
+          </div>
+        ) : (
+          <ListConversation conversations={conversations} onClickChildren={handleShowDetailConversation} />
+        )}
       </div>
     </div>
   );
