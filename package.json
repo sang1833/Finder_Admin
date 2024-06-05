@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "scripts": {
+    "start:app-shell": "cd app-shell && npm start",
+    "start:post-lists": "cd post-lists && npm start",
+    "start:header": "cd header && npm start",
+    "start:signin": "cd signin && npm start",
+    "start:react-chat-app": "cd react-chat-app && npm start",
+    "start": "concurrently \"npm run start:app-shell\" \"npm run start:post-lists\" \"npm run start:header\" \"npm run start:signin\" \"npm run start:react-chat-app\""
+  }
+}
