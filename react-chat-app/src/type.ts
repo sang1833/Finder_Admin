@@ -1,4 +1,10 @@
 //* PROPS
+
+export interface IMessageBoxInputProps {
+  conversationId?: number;
+  onReloadConversation: () => void;
+}
+
 export interface IShowDetailConversationFnProps {
   conversationId: number;
   userId: number;
@@ -31,7 +37,7 @@ export interface IMessageBadgeProps {
   unreadCount: number;
 }
 
-//* Data
+//* Api Data
 export interface IConversationSummary {
   conversationId: number;
   userId: number;
@@ -72,4 +78,12 @@ export interface IUserPartner {
   id?: number;
   displayName?: string;
   avatar?: string;
+}
+
+//* Socket data
+export interface INewMessageResDto {
+  conversationId: number;
+  message: string;
+  timestamp: Date;
+  isRead: boolean;
 }
