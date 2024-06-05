@@ -11,7 +11,7 @@ export class PostAppComponent {
   @ViewChildren('comp') components!: QueryList<any>;
   loader: any = null;
 
-  headerModule = {
+  postModule = {
     remoteEntry: 'http://localhost:6003/remoteEntry.js',
     remoteName: 'post_app',
     exposedModule: 'PostAppLoader',
@@ -20,7 +20,7 @@ export class PostAppComponent {
   constructor(readonly appService: AppService) {}
 
   async ngAfterViewInit() {
-    loadRemoteModule(this.headerModule).then((module) => {
+    loadRemoteModule(this.postModule).then((module) => {
       this.loader = module.default;
     });
   }
