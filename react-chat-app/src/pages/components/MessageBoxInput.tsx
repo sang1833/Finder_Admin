@@ -9,7 +9,7 @@ import { RiVideoOnLine } from 'react-icons/ri';
 
 export const MessageBoxInput = ({ conversationId, onReloadConversation }: IMessageBoxInputProps) => {
   const [message, setMessage] = useState('');
-  const [enterToSend, setEnterToSend] = useState<boolean>(false);
+  const [enterToSend, setEnterToSend] = useState<boolean>(true);
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [sendMessage] = useMutation(SEND_MESSAGE);
 
@@ -42,6 +42,7 @@ export const MessageBoxInput = ({ conversationId, onReloadConversation }: IMessa
   // handle press Enter
   const handlePressEnterSendMessage = async (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key == 'Enter' && !e.shiftKey && enterToSend) {
+      e.preventDefault();
       await handleSendMessage(message);
     }
   };
@@ -69,6 +70,7 @@ export const MessageBoxInput = ({ conversationId, onReloadConversation }: IMessa
               type="checkbox"
               name="press-enter"
               id="press-enter"
+              defaultChecked={enterToSend}
               onChange={(e) => setEnterToSend(e.target.checked)}
             />
             <span className="text-[14px]">Nhấn Enter để gửi</span>

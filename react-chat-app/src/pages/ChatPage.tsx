@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_USER_CONVERSATION, GET_DETAIL_CONVERSATION } from '../graphql/queries';
 import { UPDATE_LAST_READ_CONVERSATION } from '@/graphql/mutations';
@@ -21,12 +21,13 @@ const ChatPage = () => {
   const _userId = Number(localStorage.getItem('userId'));
   const _PAGE_SIZE: number = 10;
   const [conversations, setConversations] = useState([]);
-  const [conversationActiveId, setConversationActiveId] = useState<number>(0);
+  const [conversationActiveId, setConversationActiveId] = useState<number>(-1);
   const [detailConversationData, setDetailConversationData] = useState<ISection[]>([]);
   const [hasMoreSection, setHasMoreSection] = useState(true);
   const [userPartner, setUserPartner] = useState<IUserPartner | undefined>();
   const [chatSocket, setChatSocket] = useState<Socket | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
+  const conversationActiveRefId = useRef<number | null>(null);
 
   //* API QUERY
   // get list conversation
@@ -61,15 +62,21 @@ const ChatPage = () => {
     socket.emit('register', _userId.toString());
     //* listen new message
     socket.on('newMessage', async (payload: INewMessageResDto) => {
-      reloadListConversations();
-      if (conversationActiveId == payload.conversationId) {
-        //! Xử lý load message cho conversation active
-      }
+      reloadWhenReceiveMessage(payload.conversationId);
     });
     return () => {
       socket.close();
     };
   }, []);
+
+  const reloadWhenReceiveMessage = (conversationId: number) => {
+    if (conversationId == conversationActiveRefId.current) {
+      reloadDetailConversation(conversationId);
+      updateLastReadNow(conversationId);
+    } else {
+      reloadListConversations();
+    }
+  };
 
   //* FUNCTION
   // fetch detail conversation data
@@ -143,6 +150,7 @@ const ChatPage = () => {
         lastSeen: new Date(),
       },
     });
+    reloadListConversations();
   };
 
   // show detail conversation active
@@ -164,6 +172,7 @@ const ChatPage = () => {
     //* reload new conversation
     setUserPartner(userPartnerData);
     setConversationActiveId(conversationId);
+    conversationActiveRefId.current = conversationId;
     updateLastReadNow(conversationId);
     reloadListConversations();
   };
