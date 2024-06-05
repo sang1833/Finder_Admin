@@ -6,11 +6,13 @@ type Container = {
   get(module: string): Factory;
 };
 
+// Global variable from webpack
 declare const __webpack_init_sharing__: (shareScope: string) => Promise<void>;
 declare const __webpack_share_scopes__: { default: Scope };
 
 const moduleMap: Record<string, any> = {};
 
+// Take a URL and create a new script tag, then append it to the body
 function loadRemoteEntry(remoteEntry: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     if (moduleMap[remoteEntry]) {
@@ -34,6 +36,7 @@ function loadRemoteEntry(remoteEntry: string): Promise<void> {
   });
 }
 
+// Load the remote module and return the module
 async function lookupExposedModule<T>(
   remoteName: string,
   exposedModule: string
@@ -61,6 +64,7 @@ export type LoadRemoteModuleOptions = {
 //   exposedModule: 'VueAppLoader',
 // }
 
+// Call 2 function loadRemoteEntry + lookupExposedModule to load the remote module and return the module
 export async function loadRemoteModule(
   options: LoadRemoteModuleOptions
 ): Promise<any> {
