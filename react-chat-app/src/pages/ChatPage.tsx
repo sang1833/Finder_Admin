@@ -60,6 +60,7 @@ const ChatPage = () => {
     setChatSocket(socket);
     //* register
     socket.emit('register', _userId.toString());
+
     //* listen new message
     socket.on('newMessage', async (payload: INewMessageResDto) => {
       reloadWhenReceiveMessage(payload.conversationId);

@@ -15,6 +15,7 @@ import { PostAppComponent } from './post/post.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginVueAppComponent } from './login-vue/login-vue.component';
 import { ChatAppComponent } from './chat/chat.component';
+import { ManageUserAppComponent } from './manage-user/user.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ChatAppComponent } from './chat/chat.component';
     DashboardComponent,
     LoginVueAppComponent,
     ChatAppComponent,
+    ManageUserAppComponent,
   ],
   imports: [CommonModule, BrowserModule, AppRoutingModule, FormsModule],
   providers: [],

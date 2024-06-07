@@ -6,6 +6,7 @@ import { PostAppComponent } from './post/post.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginVueAppComponent } from './login-vue/login-vue.component';
 import { ChatAppComponent } from './chat/chat.component';
+import { ManageUserAppComponent } from './manage-user/user.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,11 @@ const routes: Routes = [
       {
         path: 'chat',
         component: ChatAppComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'manage-user',
+        component: ManageUserAppComponent,
         canActivate: [AuthGuard],
       },
       {
