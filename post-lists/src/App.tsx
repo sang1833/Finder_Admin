@@ -1,5 +1,9 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider
+} from "react-router-dom";
 import RootPage from "./pages/RootPage";
 import PostResultList from "./pages/PostResultList";
 import PostDetails from "./pages/PostDetails";
@@ -29,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/posts/post-details/:postId",
         element: <PostDetails />
+      },
+      {
+        path: "*",
+        element: <Navigate to="/dashboard/posts" />
       }
     ]
   }
