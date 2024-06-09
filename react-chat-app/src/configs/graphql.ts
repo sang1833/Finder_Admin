@@ -1,19 +1,14 @@
 import { ApolloClient, HttpLink, InMemoryCache, from } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
-import { stringify } from 'postcss';
-import { useEffect } from 'react';
 
 const authLink = setContext((_, { headers }) => {
-  // const token = localStorage.getItem('accessToken');
-  const token = JSON.parse(localStorage.getItem('user') || '{}');
-  useEffect(() => {
-    console.log('🚀 ~ file: graphql.ts ~ line 26 ~ authLink ~ token', token);
-  }, [token]);
+  const token = localStorage.getItem('accessToken');
+
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token?.accessToken}` : '',
+      authorization: token ? `Bearer ${token}` : '',
     },
   };
 });
