@@ -8,8 +8,9 @@ type ReloadContextType = {
 interface SnackbarProps {
   isShow: boolean;
   text: string;
-  setIsShow: (value: boolean) => void;
-  showSnackbar: (value: string) => void;
+  setIsShow?: (value: boolean) => void;
+  showSnackbar?: (value: string) => void;
+  closeSnackbar: () => void;
 }
 
 interface SignedInUser {

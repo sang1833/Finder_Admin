@@ -1,8 +1,8 @@
 main {
   display: flex;
   flex-direction: row;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 }
 
 .body_container {
@@ -14,7 +14,9 @@ main {
 }
 
 .content {
-  padding: 1rem;
-  overflow-y: auto;
+  height: calc(100vh - 73px);
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: scroll;
   flex: 1;
 }
