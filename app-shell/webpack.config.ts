@@ -3,6 +3,11 @@ const deps = require('./package.json').dependencies;
 const path = require('path');
 
 module.exports = {
+  devServer: {
+    port: 4200,
+    hot: true,
+    historyApiFallback: true,
+  },
   output: {
     publicPath: 'http://localhost:4200/',
     uniqueName: 'app-shell',

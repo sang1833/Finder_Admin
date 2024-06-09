@@ -1,7 +1,21 @@
 import { is } from "date-fns/locale";
 import React, { useState } from "react";
 
-const snackbar = (props: SnackbarProps) => {
+// interface SnackbarProps {
+//   isShow: boolean;
+//   text: string;
+//   setIsShow: (value: boolean) => void;
+//   showSnackbar: (value: string) => void;
+//   closeSnackbar: () => void;
+// }
+
+const snackbar = ({
+  isShow,
+  text,
+  closeSnackbar,
+  showSnackbar,
+  setIsShow
+}: SnackbarProps) => {
   //   const [isShow, setIsShow] = useState(false);
 
   //   function showSnackbar() {
@@ -11,25 +25,21 @@ const snackbar = (props: SnackbarProps) => {
   //     }, 3000);
   //   }
 
-  function closeSnackbar() {
-    props.setIsShow(false);
-  }
-
   return (
     <div
       id="snackbar"
       className={
-        `z-10 bg-gray-900 text-white p-4 rounded-md fixed bottom-4 right-4 flex justify-between items-center` +
-        `${props.isShow ? "opacity-100" : "opacity-0"}` +
-        `${props.isShow ? "block" : "hidden"}`
+        `z-10 bg-gray-900 text-white p-4 rounded-md fixed top-4 right-4 flex justify-between items-center ` +
+        `${isShow ? "opacity-100" : "opacity-0 bg-transparent"}` +
+        `${isShow ? "block" : "hidden"}`
       }
     >
-      {props.text}
+      {text}
       <button
         className={
-          "text-white" +
-          `${props.isShow ? "opacity-100" : "opacity-0"}` +
-          `${props.isShow ? "block" : "hidden"}`
+          "text-white p-3 hover:cursor-pointer" +
+          `${isShow ? "opacity-100" : "opacity-0"}` +
+          `${isShow ? "block" : "hidden"}`
         }
         onClick={closeSnackbar}
       >
