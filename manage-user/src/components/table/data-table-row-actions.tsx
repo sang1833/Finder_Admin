@@ -51,7 +51,7 @@ export function DataTableRowActions<TData>({
     settext(text);
     setIsShow(true);
     setTimeout(function () {
-      setIsShow(false);
+      closeSnackbar();
     }, 3000);
   }
 
@@ -91,6 +91,11 @@ export function DataTableRowActions<TData>({
     }
   }
 
+  function closeSnackbar() {
+    console.log("close snackbar", isShow);
+    if (isShow) setIsShow(false);
+  }
+
   return (
     <>
       {userInfo.activate ? (
@@ -117,6 +122,7 @@ export function DataTableRowActions<TData>({
         text={text}
         setIsShow={setIsShow}
         showSnackbar={showSnackbar}
+        closeSnackbar={closeSnackbar}
       />
     </>
   );
