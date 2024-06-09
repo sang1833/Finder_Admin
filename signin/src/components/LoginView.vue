@@ -2,7 +2,9 @@
   <section class="login-page">
     <div class="login-container">
       <h2>Chào mừng trở lại!</h2>
-      <p>Hãy nhập email và mật khẩu.</p>
+      <p v-if="!loginFailed">Hãy nhập email và mật khẩu.</p>
+      <p v-else class="wrong-password">Kiểm tra email hoặc mật khẩu!</p>
+
       <form @submit.prevent="handleLogin">
         <input
           v-model="username"
@@ -39,12 +41,14 @@ export default {
     return {
       username: "",
       password: "",
+      loginFailed: false,
       isLoading: false
     };
   },
   methods: {
     async handleLogin() {
       this.isLoading = true;
+
       try {
         const response = await axios.post(
           "http://localhost:5001/api/v1/auths/login",
@@ -53,15 +57,27 @@ export default {
             password: this.password
           }
         );
+        this.loginFailed = false;
+
+        const data = response.data;
+        console.log("data", data);
 
         localStorage.setItem("user", JSON.stringify(response.data.data));
 
-        window.location.href = "/dashboard";
+        localStorage.setItem("userId", data.data.id);
+        localStorage.setItem("accessToken", data.data.accessToken);
       } catch (error) {
-        console.error("Login failed:", error);
-        // Handle login failure, e.g., show an error message
+        console.log("error", error);
+        this.loginFailed = true;
+        this.isLoading = false;
       } finally {
         this.isLoading = false;
+        window.location.href = "/dashboard";
+        // const loginSuccessEvent = new CustomEvent("LOGIN_SUCCESS", {
+        //   detail: { loginState: true }
+        // });
+
+        // window.dispatchEvent(loginSuccessEvent);
       }
     }
   },
@@ -133,5 +149,8 @@ section {
   justify-content: center;
   align-items: center;
   gap: 10px;
+}
+.wrong-password {
+  color: red;
 }
 </style>
