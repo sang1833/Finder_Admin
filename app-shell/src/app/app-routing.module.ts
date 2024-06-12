@@ -7,6 +7,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginVueAppComponent } from './login-vue/login-vue.component';
 import { ChatAppComponent } from './chat/chat.component';
 import { ManageUserAppComponent } from './manage-user/user.component';
+import { ReportComponent } from './report/report.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,11 @@ const routes: Routes = [
       {
         path: 'manage-user',
         component: ManageUserAppComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'report',
+        component: ReportComponent,
         canActivate: [AuthGuard],
       },
       {
