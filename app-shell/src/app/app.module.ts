@@ -16,6 +16,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginVueAppComponent } from './login-vue/login-vue.component';
 import { ChatAppComponent } from './chat/chat.component';
 import { ManageUserAppComponent } from './manage-user/user.component';
+import { ReportComponent } from './report/report.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { ManageUserAppComponent } from './manage-user/user.component';
     LoginVueAppComponent,
     ChatAppComponent,
     ManageUserAppComponent,
+    ReportComponent,
   ],
   imports: [CommonModule, BrowserModule, AppRoutingModule, FormsModule],
   providers: [],
