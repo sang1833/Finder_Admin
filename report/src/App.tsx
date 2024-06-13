@@ -5,6 +5,7 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "@/api/apollo";
 import "./index.css";
 import ReportPage from "./pages/ReportPage";
+import { AuthContext } from "./contexts/authContext";
 
 const router = createBrowserRouter([
   {
@@ -14,24 +15,28 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <ReportPage />,
-        index: true
+        index: true,
       },
       {
         path: "dashboard/report",
-        element: <ReportPage />
+        element: <ReportPage />,
       },
       {
         path: "*",
-        element: <ReportPage />
-      }
-    ]
-  }
+        element: <ReportPage />,
+      },
+    ],
+  },
 ]);
 
 export function App() {
+  const user: SignedInUser = JSON.parse(localStorage.getItem("user") || "{}");
+
   return (
     <ApolloProvider client={client}>
-      <RouterProvider router={router} />
+      <AuthContext.Provider value={user}>
+        <RouterProvider router={router} />
+      </AuthContext.Provider>
     </ApolloProvider>
   );
 }

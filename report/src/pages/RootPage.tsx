@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 const RootPage = () => {
   return (
-    <main className="">
+    <main className="p-[20px]">
       <Outlet />
     </main>
   );
