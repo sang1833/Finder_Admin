@@ -10,20 +10,33 @@ import manAvatar from '../assets/manAvatar.jpeg';
 export class AppComponent {
   myLogo = logo;
   myAvatar = manAvatar;
+  userEmail: string = 'Admin';
+  userName: string = 'Admin@gmail.com';
+  private user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  ngOnInit() {
+    if (this.user) {
+      this.userEmail = this.user.email;
+      this.userName = this.user.displayName;
+      this.myAvatar = this.user.avatar;
+    }
+  }
 
   logOut() {
     // if localstorage have item user, it will call api http://localhost:5001/api/v1/auths/logout
     // then remove item user from localstorage
     // and redirect to login page
-    // else redirect to login page
-    if (localStorage.getItem('user')) {
-      const user = localStorage.getItem('user');
-      if (!user) return console.log('No user found');
+    // else still redirect to login page
+    if (this.user) {
+      if (!this.user) {
+        window.location.href = '/login';
+        return console.log('No user found');
+      }
       fetch('http://localhost:5001/api/v1/auths/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${user}`,
+          Authorization: `${this.user.accessToken}`,
         },
       })
         .then((res) => res.json())

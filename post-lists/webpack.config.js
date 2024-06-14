@@ -67,6 +67,14 @@ module.exports = {
         "react-dom": {
           singleton: true,
           requiredVersion: deps["react-dom"]
+        },
+        graphql: {
+          singleton: true,
+          requiredVersion: deps.graphql
+        },
+        "socket.io-client": {
+          singleton: true,
+          requiredVersion: deps["socket.io-client"]
         }
       }
     }),

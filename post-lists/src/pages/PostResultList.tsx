@@ -30,7 +30,8 @@ import { useSearchParams } from "react-router-dom";
 enum EnumApprove {
   ACCEPT = "ACCEPT",
   REJECT = "REJECT",
-  NOT_YET = "NOT_YET"
+  NOT_YET = "NOT_YET",
+  HIDE = "HIDE"
 }
 
 const PostResultList = () => {
@@ -281,6 +282,17 @@ const PostResultList = () => {
               }
             >
               <p>Đã huỷ</p>
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value={EnumApprove.HIDE}
+              aria-label={`Toggle ${EnumApprove.HIDE}`}
+              className={
+                approvedState === EnumApprove.HIDE
+                  ? "data-[state=on]:bg-black data-[state=on]:text-white"
+                  : ""
+              }
+            >
+              <p>Đã ẩn</p>
             </ToggleGroupItem>
           </ToggleGroup>
         </div>

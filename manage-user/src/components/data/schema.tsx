@@ -10,3 +10,11 @@ export const userInfoSchema = z.object({
 });
 
 export type UserInfo = z.infer<typeof userInfoSchema>;
+
+export const ItemTypeSchema = z.object({
+  id: z.number().optional(),
+  name: z.string().optional(),
+  updatedDate: z.string().optional()
+});
+
+export type ItemType = z.infer<typeof ItemTypeSchema>;
