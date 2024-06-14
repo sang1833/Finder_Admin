@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootPage from "./pages/RootPage";
 import ManageUserPage from "./pages/ManageUserPage";
+import ManageItemTypePage from "./pages/ManageItemType";
+
 import { ApolloProvider } from "@apollo/client";
 import { client } from "@/api/apollo";
 import "./index.css";
@@ -19,8 +21,11 @@ const router = createBrowserRouter([
       },
       {
         path: "dashboard/manage-user",
-        element: <ManageUserPage />,
-        index: true
+        element: <ManageUserPage />
+      },
+      {
+        path: "dashboard/manage-item-type",
+        element: <ManageItemTypePage />
       },
       {
         path: "*",

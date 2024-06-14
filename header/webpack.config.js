@@ -1,4 +1,5 @@
 const { ModuleFederationPlugin } = require("webpack").container;
+const deps = require("./package.json").dependencies;
 
 /** @type {import('webpack').Configuration} */
 module.exports = {
@@ -7,6 +8,9 @@ module.exports = {
     uniqueName: "angular_app",
     scriptType: "text/javascript",
     assetModuleFilename: "images/[hash][ext][query]",
+  },
+  resolve: {
+    extensions: [".js", ".tsx", ".ts", ".png", ".jpg", ".jpeg", ".gif", ".svg"],
   },
   optimization: {
     runtimeChunk: false,
@@ -31,6 +35,16 @@ module.exports = {
         "@angular/common": { singleton: true, eager: true },
         "@angular/router": { singleton: true, eager: true },
         "@angular/common/http": { singleton: true, eager: true },
+        react: {
+          eager: true,
+          singleton: true,
+          requiredVersion: deps.react,
+        },
+        "react-dom/client": {
+          eager: true,
+          singleton: true,
+          requiredVersion: deps["react-dom"],
+        },
       },
     }),
   ],
@@ -38,5 +52,7 @@ module.exports = {
     // this is to remove the error "ws://localhost:4200/ws failed" in the console when we disable live reload
     // also this solve websocket proxy issue in local
     webSocketServer: false,
+    hot: true,
+    historyApiFallback: true,
   },
 };

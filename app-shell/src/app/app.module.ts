@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
@@ -17,6 +17,10 @@ import { LoginVueAppComponent } from './login-vue/login-vue.component';
 import { ChatAppComponent } from './chat/chat.component';
 import { ManageUserAppComponent } from './manage-user/user.component';
 import { ReportComponent } from './report/report.component';
+import { HttpClientModule } from '@angular/common/http';
+import { appInitializer } from './helpers/auth.interceptor';
+import { CheckTokenService } from './app.service';
+import { ManageItemTypeComponent } from './manage-item-type/manage-item-type.component';
 
 @NgModule({
   declarations: [
@@ -34,9 +38,23 @@ import { ReportComponent } from './report/report.component';
     ChatAppComponent,
     ManageUserAppComponent,
     ReportComponent,
+    ManageItemTypeComponent,
   ],
-  imports: [CommonModule, BrowserModule, AppRoutingModule, FormsModule],
-  providers: [],
+  imports: [
+    CommonModule,
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+  ],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializer,
+      deps: [CheckTokenService],
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

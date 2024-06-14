@@ -992,6 +992,23 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fortawesome/fontawesome-common-types@6.5.2":
+  version "6.5.2"
+  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.5.2.tgz"
+  integrity sha512-gBxPg3aVO6J0kpfHNILc+NMhXnqHumFxOmjYCFfOiLZfwhnnfhtsdA2hfJlDnj+8PjAs6kKQPenOTKj3Rf7zHw==
+
+"@fortawesome/fontawesome-svg-core@^6.5.2", "@fortawesome/fontawesome-svg-core@~1 || ~6":
+  version "6.5.2"
+  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-6.5.2.tgz"
+  integrity sha512-5CdaCBGl8Rh9ohNdxeeTMxIj8oc3KNBgIeLMvJosBMdslK/UnEB8rzyDRrbKdL1kDweqBPo4GT9wvnakHWucZw==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "6.5.2"
+
+"@fortawesome/vue-fontawesome@^3.0.8":
+  version "3.0.8"
+  resolved "https://registry.npmjs.org/@fortawesome/vue-fontawesome/-/vue-fontawesome-3.0.8.tgz"
+  integrity sha512-yyHHAj4G8pQIDfaIsMvQpwKMboIZtcHTUvPqXjOHyldh1O1vZfH4W03VDPv5RvI9P6DLTzJQlmVgj9wCf7c2Fw==
+
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
   resolved "https://registry.npmjs.org/@hapi/hoek/-/hoek-9.3.0.tgz"
@@ -5986,7 +6003,7 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npmjs.org/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue@*, "vue@^2 || ^3.2.13", vue@^3.0.0, vue@^3.2.13, vue@3.2.47:
+vue@*, "vue@^2 || ^3.2.13", vue@^3.0.0, vue@^3.2.13, "vue@>= 3.0.0 < 4", vue@3.2.47:
   version "3.2.47"
   resolved "https://registry.npmjs.org/vue/-/vue-3.2.47.tgz"
   integrity sha512-60188y/9Dc9WVrAZeUVSDxRQOZ+z+y5nO2ts9jWXSTkMvayiWxCWOWtBQoYjLeccfXkiiPZWAHcV+WTPhkqJHQ==

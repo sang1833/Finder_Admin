@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, Observable, of, tap, throwError } from 'rxjs';
+
+import { catchError, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -93,37 +95,83 @@ export class AuthService {
   }
 }
 
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+};
+
+// @Injectable({
+//   providedIn: 'root',
+// })
+// export class CheckTokenService {
+//   private apiUrl = 'http://localhost:5001/api/v1/auths/';
+
+//   constructor(private http: HttpClient) {}
+
+//   refreshToken() {
+//     return this.http.post(this.apiUrl + 'refreshtoken', {}, httpOptions);
+//   }
+
+//   checkAndRefreshToken(): Observable<any> {
+//     const user = JSON.parse(localStorage.getItem('user') || '{}');
+//     if (!user || !user.refreshToken) return new Observable();
+
+//     const now = new Date();
+//     const refreshTokenExpirationDate = new Date(user.refreshTokenExpired);
+
+//     // Check if the refreshToken has expired
+//     if (now > refreshTokenExpirationDate) {
+//       return this.http.post(
+//         `${this.apiUrl}refreshToken/${user.refreshToken}`,
+//         {}
+//       );
+//     } else return new Observable();
+//   }
+// }
+
 @Injectable({
   providedIn: 'root',
 })
 export class CheckTokenService {
-  private apiUrl = 'http://localhost:5001/api/v1/auths/';
+  private refreshTokenEndpoint = 'refreshToken';
+  private apiUrl = 'http://localhost:5001/api/v1/auths';
 
   constructor(private http: HttpClient) {}
 
-  checkAndRefreshToken(): void {
-    const userItem = localStorage.getItem('user');
-    if (!userItem) return;
-
-    const user = JSON.parse(userItem);
-    if (!user || !user.refreshToken) return;
-
-    const now = new Date();
-    const refreshTokenExpirationDate = new Date(user.refreshTokenExpired);
-
-    // Check if the refreshToken has expired
-    if (now > refreshTokenExpirationDate) {
-      this.http
-        .get(`${this.apiUrl}refreshToken/${user.refreshToken}`)
-        .subscribe(
-          (response: any) => {
-            console.log('Token refreshed successfully');
-            localStorage.setItem('user', JSON.stringify(response.data.data));
-          },
-          (error) => {
-            console.error('Error refreshing token:', error);
-          }
-        );
+  checkTokenExpiration(): Observable<boolean> {
+    const accessTokenExpired = localStorage.getItem('accessTokenExpired');
+    const currentDate = new Date();
+    if (
+      accessTokenExpired &&
+      currentDate.getTime() === new Date(accessTokenExpired).getTime()
+    ) {
+      return this.refreshAccessToken().pipe(
+        catchError((error) => {
+          console.error('Error refreshing access token:', error);
+          return throwError(error);
+        })
+      );
     }
+    return of(true); // No need to refresh token
+  }
+
+  refreshAccessToken(): Observable<any> {
+    const refreshToken = localStorage.getItem('accessTokenExpired');
+    return this.http
+      .post<any>(
+        `${this.apiUrl}/${this.refreshTokenEndpoint}/${refreshToken}`,
+        {}
+      )
+      .pipe(
+        tap((response) => {
+          console.log('Access token refreshed:', response.data.accesToken);
+          localStorage.setItem('accessToken', response.data.accesToken);
+          localStorage.setItem('accessTokenExpired', response.data.accesToken);
+          localStorage.setItem('refreshToken', response.data.refreshToken);
+          localStorage.setItem(
+            'refreshTokenExpired',
+            response.data.refreshTokenExpired
+          );
+        })
+      );
   }
 }

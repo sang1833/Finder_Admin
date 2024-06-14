@@ -47,40 +47,45 @@ export function formatTimeToString(inputDateTime: string): string {
 }
 
 export const columns: ColumnDef<UserInfo>[] = [
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //       className="translate-y-[2px]"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //       className="translate-y-[2px]"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false
+  // },
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false
-  },
-  {
+    id: "avatar",
     accessorKey: "avatar",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ảnh đại diện" />
+      <DataTableColumnHeader
+        className="min-w-[60px]"
+        column={column}
+        title="Ảnh đại diện"
+      />
     ),
     cell: ({ row }) => {
       const avatar = row.getValue("avatar");
 
       return (
-        <div>
+        <span>
           <img
             className="h-12 w-12 border rounded-full object-cover"
             src={row.getValue("avatar")}
@@ -91,7 +96,7 @@ export const columns: ColumnDef<UserInfo>[] = [
               target.src = manAvatar; // Replace with your fallback image URL
             }}
           />
-        </div>
+        </span>
       );
     },
     enableSorting: false,
@@ -103,7 +108,9 @@ export const columns: ColumnDef<UserInfo>[] = [
       <DataTableColumnHeader column={column} title="Tên" />
     ),
     cell: ({ row }) => (
-      <div className="w-[80px]">{row.getValue("displayName")}</div>
+      <span className="w-[80px] truncate min-w-20">
+        {row.getValue("displayName")}
+      </span>
     ),
     enableSorting: false,
     enableHiding: false
@@ -144,8 +151,13 @@ export const columns: ColumnDef<UserInfo>[] = [
 
       return (
         <div className="flex w-[100px] items-center">
-          {activated && (
+          {activated ? (
             <Badge variant="outline">{`${activated && `Đã kích hoạt`}`}</Badge>
+          ) : (
+            <Badge
+              variant="outline"
+              className=" text-red-700"
+            >{`${`Đã vô hiệu`}`}</Badge>
           )}
 
           {/* <span>{`${activated ? `Đã kích hoạt` : `Chưa kích hoạt`}`}</span> */}

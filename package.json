@@ -10,7 +10,8 @@
     "start:react-chat-app": "cd react-chat-app && npm start",
     "start:manage-user": "cd manage-user && npm start",
     "start:report": "cd report && npm start",
-    "start": "concurrently \"npm run start:app-shell\" \"npm run start:post-lists\" \"npm run start:header\" \"npm run start:signin\" \"npm run start:react-chat-app\" \"npm run start:manage-user\"  \"npm run start:report\"",
+    "start:notify": "cd notify && npm start",
+    "start": "concurrently \"npm run start:app-shell\" \"npm run start:post-lists\" \"npm run start:header\" \"npm run start:signin\" \"npm run start:react-chat-app\" \"npm run start:manage-user\"  \"npm run start:report\" \"npm run start:notify\"",
     "install:app-shell": "cd app-shell && npm install",
     "install:post-lists": "cd post-lists && npm install",
     "install:header": "cd header && npm install",
@@ -18,7 +19,8 @@
     "install:react-chat-app": "cd react-chat-app && npm install",
     "install:manage-user": "cd manage-user && npm install",
     "install:report": "cd report && npm install",
-    "install:all": "concurrently \"npm run install:app-shell\" \"npm run install:post-lists\" \"npm run install:header\" \"npm run install:signin\" \"npm run install:react-chat-app\" \"npm run install:manage-user\" \"npm run install:report\""
+    "install:notify": "cd notify && npm install",
+    "install:all": "concurrently \"npm run install:app-shell\" \"npm run install:post-lists\" \"npm run install:header\" \"npm run install:signin\" \"npm run install:react-chat-app\" \"npm run install:manage-user\" \"npm run install:report\" \"npm run install:notify\""
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.0"

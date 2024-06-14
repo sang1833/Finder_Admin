@@ -57,7 +57,8 @@ module.exports = {
       name: "managerUser_app",
       filename: "remoteEntry.js",
       exposes: {
-        ManageUserAppLoader: "./src/loader.ts"
+        ManageUserAppLoader: "./src/loader.ts",
+        ManageItemTypeLoader: "./src/loaderItemType.ts"
       },
       shared: {
         react: {
@@ -67,6 +68,14 @@ module.exports = {
         "react-dom": {
           singleton: true,
           requiredVersion: deps["react-dom"]
+        },
+        graphql: {
+          singleton: true,
+          requiredVersion: deps.graphql
+        },
+        "socket.io-client": {
+          singleton: true,
+          requiredVersion: deps["socket.io-client"]
         }
       }
     }),
