@@ -8,6 +8,7 @@ import { LoginVueAppComponent } from './login-vue/login-vue.component';
 import { ChatAppComponent } from './chat/chat.component';
 import { ManageUserAppComponent } from './manage-user/user.component';
 import { ReportComponent } from './report/report.component';
+import { ManageItemTypeComponent } from './manage-item-type/manage-item-type.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,11 @@ const routes: Routes = [
       {
         path: 'manage-user',
         component: ManageUserAppComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'manage-item-type',
+        component: ManageItemTypeComponent,
         canActivate: [AuthGuard],
       },
       {

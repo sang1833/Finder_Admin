@@ -20,3 +20,21 @@ export const GET_LIST_USER = gql`
     }
   }
 `;
+
+export const GET_LIST_ITEMTYPE = gql`
+  query GetItemTypeWithFilter($filters: FilterItemTypeInput) {
+    getItemTypeWithFilter(filters: $filters) {
+      status
+      statusCode
+      message
+      data {
+        listData {
+          id
+          name
+          updatedDate
+        }
+        totalCount
+      }
+    }
+  }
+`;

@@ -37,6 +37,7 @@ header {
   img {
     width: 46px;
     height: 46px;
+    display: block;
     border-radius: 50%;
     overflow: hidden;
     object-fit: cover;
@@ -47,7 +48,6 @@ header {
     padding: 0 10px;
     margin: 0;
     box-sizing: border-box;
-    margin-block-start: 0;
   }
   .mail {
     font-weight: 500;
@@ -69,4 +69,39 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+button p {
+  margin: 0;
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+  header {
+    justify-content: space-between;
+  }
+  .admin {
+    gap: 5px;
+  }
+  button {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+  }
+  img {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  header {
+    padding: 5px;
+  }
+  .admin {
+    gap: 5px;
+  }
+  button {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+  }
 }

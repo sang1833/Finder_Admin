@@ -57,7 +57,7 @@ export function DataTableRowActions<TData>({
 
   async function handleActiveUser() {
     if (!userInfo) return;
-    if (userInfo.id === user.id) {
+    if (userInfo.email === user.email) {
       showSnackbar("Không thể thay đổi tài khoản của bạn!");
       return;
     }
@@ -103,9 +103,13 @@ export function DataTableRowActions<TData>({
           variant="default"
           onClick={handleActiveUser}
           disabled={loading}
-          className=" hover:bg-gray-800 bg-black text-white hover:text-white min-w-[65px]"
+          className=" hover:bg-gray-800 bg-black text-white hover:text-white min-w-[101px]"
         >
-          {loading || isLoading ? <LoaderCircle className="w-6 h-6" /> : "Ẩn"}
+          {loading || isLoading ? (
+            <LoaderCircle className="w-6 h-6" />
+          ) : (
+            "Vô hiệu"
+          )}
         </Button>
       ) : (
         <Button
@@ -114,7 +118,11 @@ export function DataTableRowActions<TData>({
           disabled={loading}
           className="min-w-[65px]"
         >
-          {loading || isLoading ? <LoaderCircle className="w-6 h-6" /> : "Hiện"}
+          {loading || isLoading ? (
+            <LoaderCircle className="w-6 h-6" />
+          ) : (
+            "Kich hoạt"
+          )}
         </Button>
       )}
       <Snackbar
