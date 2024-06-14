@@ -1,26 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { cn } from "@/lib/utils";
-import PostCard from "@/components/Report/Card/ReportCard";
+import ReportCard from "@/components/Report/Card/ReportCard";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { GET_POST_BY_ID } from "@/services/graphql/queries";
+import { GET_REPORT_BY_ID } from "@/services/graphql/queries";
 import LargeSpinner from "@/components/LargeSpinner";
 import { ArrowBigLeftDash } from "lucide-react";
 
 const ReportDetails = () => {
   const navigate = useNavigate();
-  const { postId } = useParams();
+  const { reportId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [isReset, setIsReset] = useState(false);
   const [report, setReport] = useState<ReportDetail | null>(null);
-  const [getPostDetails] = useLazyQuery(GET_POST_BY_ID);
+  const [getReportDetails] = useLazyQuery(GET_REPORT_BY_ID);
 
-  const handleGetPostDetails = async () => {
+  const handleGetReportDetails = async () => {
     setIsLoading(true);
-    await getPostDetails({
+    await getReportDetails({
       variables: {
-        id: Number(postId),
+        id: Number(reportId),
       },
     })
       .then((result) => {
@@ -28,22 +28,10 @@ const ReportDetails = () => {
 
         const rData: ReportDetail = {
           id: resultData.id,
-          title: resultData.title,
-          location: resultData.location,
-          postType: resultData.postType,
-          description: resultData.description,
-          contactPhone: resultData.contactPhone,
-          locationDetail: resultData.locationDetail,
-          authorId: resultData.authorId,
-          authorAvatar: resultData.authorAvatar,
-          authorDisplayName: resultData.authorDisplayName,
-          images: resultData.images,
-          itemTypes: resultData.itemTypes,
-          createdDate: new Date(resultData.createdDate),
-          updatedDate: new Date(resultData.updatedDate),
-          viewCount: resultData.viewCount,
-          totalComments: resultData.totalComments,
-          approved: resultData.approved,
+          reportContent: resultData.reportContent,
+          handled: resultData.handled,
+          createdDate: resultData.createdDate,
+          updatedDate: resultData.updatedDate,
         };
 
         setReport(rData);
@@ -55,13 +43,13 @@ const ReportDetails = () => {
   };
 
   useEffect(() => {
-    if (postId) {
-      handleGetPostDetails();
+    if (reportId) {
+      handleGetReportDetails();
     }
-  }, [postId, isReset]);
+  }, [reportId, isReset]);
 
   function handleBackToList() {
-    navigate("/dashboard/posts");
+    navigate("/dashboard/report");
   }
 
   return (
@@ -81,7 +69,7 @@ const ReportDetails = () => {
           <LargeSpinner />
         </div>
       ) : (
-        <PostCard post={report} isReset={isReset} setIsReset={setIsReset} />
+        <ReportCard report={report} isReset={isReset} setIsReset={setIsReset} />
       )}
     </div>
   );

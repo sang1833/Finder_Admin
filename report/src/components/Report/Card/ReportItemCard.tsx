@@ -9,8 +9,9 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import { format } from "date-fns";
 
 const ReportItemCard = ({ report }: ReportItemCardProps) => {
   const navigate = useNavigate();
@@ -19,18 +20,14 @@ const ReportItemCard = ({ report }: ReportItemCardProps) => {
     text: "",
     color: "",
   };
-  switch (report?.approved) {
-    case null:
-      approvalText.text = "Chưa duyệt";
+  switch (report?.handled) {
+    case false:
+      approvalText.text = "Chưa xử lý";
       approvalText.color = "text-yellow-500 border border-yellow-500";
       break;
-    case "ACCEPT":
-      approvalText.text = "Đã duyệt";
+    case true:
+      approvalText.text = "Đã xử lý";
       approvalText.color = "text-green-700 border border-green-700";
-      break;
-    case "REJECT":
-      approvalText.text = "Từ chối";
-      approvalText.color = "text-red-500 border border-red-500";
       break;
   }
 
@@ -43,51 +40,63 @@ const ReportItemCard = ({ report }: ReportItemCardProps) => {
       <div className="md:w-2/12 sm:w-4/12 flex justify-center items-center overflow-hidden cursor-pointer rounded-tl-xl sm:rounded-bl-xl sm:rounded-tr-none rounded-bl-none rounded-tr-xl">
         <img
           src={
-            report.filePath
-              ? report.filePath
+            report.postImage
+              ? report.postImage
               : "https://cdn.vectorstock.com/i/preview-1x/39/63/no-photo-camera-sign-vector-3213963.jpg"
           }
-          alt={report.fileName ? report.fileName : "no-image"}
           loading="lazy"
           className="object-cover w-full h-[200px] hover:scale-125 duration-300"
-          onClick={() => navigate("post-details/" + report.id)}
+          onClick={() => navigate("report-details/" + report.id)}
         />
       </div>
+
       <div className="md:w-10/12 sm:w-8/12 justify-center items-center">
         <CardHeader>
           <CardTitle
-            onClick={() => navigate("post-details/" + report.id)}
+            onClick={() => navigate("report-details/" + report.id)}
             className={cn(
               "cursor-pointer hover:text-slate-600 lg:text-xl text-base"
             )}
           >
-            {report.title ? report.title : "Không có tiêu đề"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="lg:text-base text-sm">
-            {report.description ? (
+            {report.reportContent ? (
               <>
-                {report.description.length > 150
-                  ? report.description.substring(0, 150) + "..."
-                  : report.description}
+                {report.reportContent.length > 150
+                  ? report.reportContent.substring(0, 150) + "..."
+                  : report.reportContent}
               </>
             ) : (
-              "Không có mô tả"
+              "Không có lý do"
             )}
-          </p>
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent className="flex items-center gap-4">
+          <img
+            className="w-[40px] h-[40px] rounded-full overflow-auto object-cover"
+            src="https://i.ibb.co/xJQ1mfH/scene.png"
+            alt="Avatar"
+          />
+          <div>
+            <p className="lg:text-base text-sm font-semibold">
+              {report.senderName ? report.senderName : "Không có tên"}
+            </p>
+            <p className="lg:text-base text-sm">
+              {report.senderEmail ? report.senderEmail : "Không có email"}
+            </p>
+          </div>
         </CardContent>
+
         <CardFooter
           className={cn(
             "flex justify-between sm:items-center items-end sm:flex-row flex-col"
           )}
         >
-          <div className="flex justify-center items-center">
-            <LocationOnOutlinedIcon />
+          <div className="flex justify-center items-center gap-2">
+            <AccessTimeIcon />
             <p className="font-medium lg:text-base text-sm">
-              {report.locationDetail
-                ? report.locationDetail
-                : "Khu vực chưa được cung cấp"}
+              {report.createdDate.toString()
+                ? format(report.createdDate, "dd/MM/yyyy")
+                : "Không có thời điểm tạo"}
             </p>
           </div>
 
@@ -98,19 +107,6 @@ const ReportItemCard = ({ report }: ReportItemCardProps) => {
               >
                 {approvalText.text}
               </span>
-            </div>
-            <div className="flex justify-center items-center">
-              <p className="font-semibold lg:text-base text-sm">
-                {report.postType ? (
-                  <>
-                    {report.postType === "COLLECT"
-                      ? "Tin nhặt được"
-                      : "Tin cần tìm"}
-                  </>
-                ) : (
-                  "Loại tin không xác định"
-                )}
-              </p>
             </div>
           </div>
         </CardFooter>

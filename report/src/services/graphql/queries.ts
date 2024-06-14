@@ -1,22 +1,26 @@
 import { gql } from "@apollo/client";
 
-export const GET_POST_WITH_FILTER_ADMIN = gql`
-  query GetPostWithFilter($filters: AdminFilterPostInput!) {
-    adminGetPostWithFilter(filters: $filters) {
+export const GET_REPORT_WITH_FILTER_ADMIN = gql`
+  query GetReportWithFilter($filters: FilterPostReportInput!) {
+    adminGetPostReportWithFilter(filters: $filters) {
       status
       statusCode
       data {
         listData {
           id
-          approved
-          createdDate
-          description
-          fileName
-          filePath
-          location
-          locationDetail
+          reportContent
+          handled
+          postId
+          postTitle
           postType
-          title
+          postLocation
+          postImage
+          postApproved
+          senderId
+          senderName
+          senderAvatar
+          senderEmail
+          createdDate
           updatedDate
         }
         totalCount
@@ -163,6 +167,47 @@ export const GET_COMMENTS = gql`
           }
         }
         totalCount
+      }
+      message
+    }
+  }
+`;
+
+export const GET_REPORT_BY_ID = gql`
+  query getReportById($id: Int!) {
+    getPostReportById(id: $id) {
+      status
+      statusCode
+      data {
+        id
+        reportContent
+        handled
+        postId
+        senderId
+        createdDate
+        updatedDate
+      }
+      message
+    }
+  }
+`;
+
+export const GET_USER_BY_ID = gql`
+  query GetUserProfileById($id: Int!) {
+    getUserProfileById(id: $id) {
+      status
+      statusCode
+      data {
+        id
+        email
+        phone
+        displayName
+        address
+        gender
+        activate
+        avatar
+        createdDate
+        updatedDate
       }
       message
     }

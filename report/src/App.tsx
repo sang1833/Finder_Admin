@@ -6,6 +6,7 @@ import { client } from "@/api/apollo";
 import "./index.css";
 import ReportPage from "./pages/ReportPage";
 import { AuthContext } from "./contexts/authContext";
+import ReportDetails from "./pages/ReportDetails";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard/report",
         element: <ReportPage />,
+      },
+      {
+        path: "/dashboard/report/report-details/:reportId",
+        element: <ReportDetails />,
       },
       {
         path: "*",

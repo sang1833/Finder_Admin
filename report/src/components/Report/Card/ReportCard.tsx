@@ -11,12 +11,6 @@ import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import ManageSearchOutlinedIcon from "@mui/icons-material/ManageSearchOutlined";
 import FmdGoodOutlinedIcon from "@mui/icons-material/FmdGoodOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-// import IconButton from "@mui/joy/IconButton";
-// import Face from "@mui/icons-material/Face";
-// import MoreHoriz from "@mui/icons-material/MoreHoriz";
-// import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
-// import SendOutlined from "@mui/icons-material/SendOutlined";
-// import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -33,19 +27,36 @@ import { formatDistanceToNow, set } from "date-fns";
 import { vi } from "date-fns/locale";
 import PostComments from "../Comment/PostComments";
 import { Button, Stack } from "@mui/material";
-import { APPROVED_POST } from "@/services/graphql/mutations";
-import { useMutation } from "@apollo/client";
+import { HANDLED_REPORT } from "@/services/graphql/mutations";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "@/contexts/authContext";
+import { GET_POST_BY_ID, GET_USER_BY_ID } from "@/services/graphql/queries";
 
-export default function ReportCard({ post, setIsReset }: ReportCardProps) {
+export default function ReportCard({ report, setIsReset }: ReportCardProps) {
   const navigate = useNavigate();
-  const user = useContext(AuthContext);
-
+  // const user = useContext(AuthContext);
+  const signedInUser = JSON.parse(localStorage.getItem("user") || "{}");
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
-  const [aprrovedPost, { loading, error }] = useMutation(APPROVED_POST);
+  const [handledReport, { loading, error }] = useMutation(HANDLED_REPORT, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${signedInUser.accessToken}`,
+      },
+    },
+  });
+  const [getPostDetails] = useLazyQuery(GET_POST_BY_ID);
+  const [getUserDetails] = useLazyQuery(GET_USER_BY_ID, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${signedInUser.accessToken}`,
+      },
+    },
+  });
+  const [post, setPost] = useState<PostDetail | null>(null);
+  const [sender, setSender] = useState<UserDetail | null>(null);
 
   let approvalText = {
     text: "",
@@ -79,13 +90,83 @@ export default function ReportCard({ post, setIsReset }: ReportCardProps) {
     });
   }, [api]);
 
-  function handleApprovedPost(approved: string) {
+  const fetchPost = async () => {
+    await getPostDetails({
+      variables: {
+        id: Number(report?.postId),
+      },
+    })
+      .then((result) => {
+        const resultData = result.data.getPostById.data;
+
+        const pData: PostDetail = {
+          id: resultData.id,
+          title: resultData.title,
+          location: resultData.location,
+          postType: resultData.postType,
+          description: resultData.description,
+          contactPhone: resultData.contactPhone,
+          locationDetail: resultData.locationDetail,
+          authorId: resultData.authorId,
+          authorAvatar: resultData.authorAvatar,
+          authorDisplayName: resultData.authorDisplayName,
+          images: resultData.images,
+          itemTypes: resultData.itemTypes,
+          createdDate: new Date(resultData.createdDate),
+          updatedDate: new Date(resultData.updatedDate),
+          viewCount: resultData.viewCount,
+          totalComments: resultData.totalComments,
+          approved: resultData.approved,
+        };
+
+        setPost(pData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fetchUser = async () => {
+    await getUserDetails({
+      variables: {
+        id: Number(report?.senderId),
+      },
+    })
+      .then((result) => {
+        const resultData = result.data.getUserProfileById.data;
+
+        const uData: UserDetail = {
+          id: resultData.id,
+          email: resultData.email,
+          phone: resultData.phone,
+          displayName: resultData.displayName,
+          address: resultData.address,
+          gender: resultData.gender,
+          activate: resultData.activate,
+          avatar: resultData.avatar,
+          createdDate: new Date(resultData.createdDate),
+          updatedDate: new Date(resultData.updatedDate),
+        };
+
+        setSender(uData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchPost();
+    fetchUser();
+  }, []);
+
+  function handleReport(hidden: boolean) {
     return async () => {
-      await aprrovedPost({
+      await handledReport({
         variables: {
           bodyReq: {
-            postId: post?.id,
-            approved: approved,
+            id: report?.id,
+            hiddenPost: hidden,
           },
         },
       }).then((result) => {
@@ -100,7 +181,7 @@ export default function ReportCard({ post, setIsReset }: ReportCardProps) {
     };
   }
 
-  if (error) alert("Duyệt bài đăng thất bại: " + error);
+  if (error) alert("Duyệt báo cáo thất bại: " + error);
 
   return (
     <section className="w-full flex justify-between">
@@ -310,29 +391,26 @@ export default function ReportCard({ post, setIsReset }: ReportCardProps) {
         <div className="absolute right-2 z-50">
           {
             <Stack spacing={2} direction="row">
-              {(post?.approved === null || post?.approved === "REJECT") && (
-                <Button
-                  variant="contained"
-                  sx={{ backgroundColor: "hsl(222.2 47.4% 11.2%)" }}
-                  onClick={handleApprovedPost("ACCEPT")}
-                  disabled={loading}
-                >
-                  {"Duyệt bài đăng"}
-                </Button>
-              )}
-              {(post?.approved === null || post?.approved === "ACCEPT") && (
-                <Button
-                  variant="outlined"
-                  sx={{
-                    color: "hsl(0 80% 50%)",
-                    borderColor: "hsl(0 80% 50%)",
-                  }}
-                  onClick={handleApprovedPost("REJECT")}
-                  disabled={loading}
-                >
-                  {"Huỷ bài đăng"}
-                </Button>
-              )}
+              <Button
+                variant="contained"
+                sx={{ backgroundColor: "hsl(222.2 47.4% 11.2%)" }}
+                onClick={handleReport(true)}
+                disabled={loading}
+              >
+                {"Ẩn bài đăng"}
+              </Button>
+
+              <Button
+                variant="outlined"
+                sx={{
+                  color: "hsl(134, 100%, 66%)",
+                  borderColor: "hsl(134, 100%, 66%)",
+                }}
+                onClick={handleReport(false)}
+                disabled={loading}
+              >
+                {"Hợp lệ"}
+              </Button>
             </Stack>
           }
         </div>

@@ -30,12 +30,12 @@ export const REPLY_COMMENT = gql`
   }
 `;
 
-export const APPROVED_POST = gql`
-  mutation Mutation($bodyReq: ApprovePostInput!) {
-    adminApprovePost(bodyReq: $bodyReq) {
-      message
+export const HANDLED_REPORT = gql`
+  mutation Mutation($bodyReq: HandlePostReportInput!) {
+    handlePostReport(bodyReq: $bodyReq) {
       status
       statusCode
+      message
     }
   }
 `;

@@ -60,16 +60,18 @@ interface Post {
 
 interface ReportWithFilter {
   id: number;
-  title: string;
+  reportContent: string;
+  handled: boolean;
+  postId: number;
+  postTitle: string;
   postType: string;
-  location: string;
-  locationDetail: string;
-  description: string;
-  approved: string;
-  viewCount: number;
-  totalComments: number;
-  fileName: string;
-  filePath: string;
+  postLocation: string;
+  postImage: string;
+  postApproved: string;
+  senderId: number;
+  senderName: string;
+  senderAvatar: string;
+  senderEmail: string;
   createdDate: Date;
   updatedDate: Date;
 }
@@ -88,56 +90,14 @@ interface ResultOFPostI {
   totalCount: number;
 }
 
-/*
-query Data($getPostByIdId: Int!) {
-  getPostById(id: $getPostByIdId) {
-    data {
-      viewCount
-      updatedDate
-      totalComments
-      title
-      location
-      postType
-      locationDetail
-      itemTypes {
-        id
-        name
-      }
-      images {
-        filePath
-        fileName
-      }
-      id
-      description
-      createdDate
-      contactPhone
-      authorId
-      authorAvatar
-      approved
-      authorDisplayName
-    }
-  }
-}
-*/
-
 interface ReportDetail {
   id: number;
-  title: string;
-  location: string;
-  postType: string;
-  description: string;
-  contactPhone: string;
-  locationDetail: string;
-  authorId: number;
-  authorAvatar: string;
-  authorDisplayName: string;
-  images: PostImage[];
-  itemTypes: ItemType[];
+  reportContent: string;
+  handled: boolean;
+  postId: number;
+  senderId: number;
   createdDate: Date;
   updatedDate: Date;
-  viewCount: number;
-  totalComments: number;
-  approved: string;
 }
 
 interface PostImage {
@@ -151,7 +111,7 @@ interface ItemType {
 }
 
 interface ReportCardProps {
-  post: ReportDetail | null;
+  report: ReportDetail | null;
   isReset?: boolean;
   setIsReset: (value: boolean) => void;
 }
@@ -174,4 +134,37 @@ interface Comment {
   createdDate: string;
   updatedDate: string;
   subComments: Comment[];
+}
+
+interface PostDetail {
+  id: number;
+  title: string;
+  location: string;
+  postType: string;
+  description: string;
+  contactPhone: string;
+  locationDetail: string;
+  authorId: number;
+  authorAvatar: string;
+  authorDisplayName: string;
+  images: PostImage[];
+  itemTypes: ItemType[];
+  createdDate: Date;
+  updatedDate: Date;
+  viewCount: number;
+  totalComments: number;
+  approved: string;
+}
+
+interface UserDetail {
+  id: number;
+  email: string;
+  phone: string;
+  displayName: string;
+  address: string;
+  gender: boolean;
+  activate: boolean;
+  avatar: string;
+  createdDate: Date;
+  updatedDate: Date;
 }

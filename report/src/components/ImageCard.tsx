@@ -10,7 +10,7 @@ export default function ImageCard({ post }: ImageCardProps) {
 
   let approvalText = {
     text: "",
-    color: ""
+    color: "",
   };
   switch (post.approved) {
     case null:

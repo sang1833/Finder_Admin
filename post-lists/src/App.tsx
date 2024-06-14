@@ -2,7 +2,7 @@ import React from "react";
 import {
   createBrowserRouter,
   Navigate,
-  RouterProvider
+  RouterProvider,
 } from "react-router-dom";
 import RootPage from "./pages/RootPage";
 import PostResultList from "./pages/PostResultList";
@@ -20,26 +20,26 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <PostResultList />,
-        index: true
+        index: true,
       },
       {
         path: "dashboard/posts",
-        element: <PostResultList />
+        element: <PostResultList />,
       },
       {
         path: "post-details/:postId",
-        element: <PostDetails />
+        element: <PostDetails />,
       },
       {
         path: "/dashboard/posts/post-details/:postId",
-        element: <PostDetails />
+        element: <PostDetails />,
       },
       {
         path: "*",
-        element: <Navigate to="/dashboard/posts" />
-      }
-    ]
-  }
+        element: <Navigate to="/dashboard/posts" />,
+      },
+    ],
+  },
 ]);
 
 // const router = createBrowserRouter(

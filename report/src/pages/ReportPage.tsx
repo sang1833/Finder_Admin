@@ -11,7 +11,7 @@ import ChangeCircleOutlinedIcon from "@mui/icons-material/ChangeCircleOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { useLazyQuery } from "@apollo/client";
 import ReportsList from "@/components/Report/ReportsList";
-import { GET_POST_WITH_FILTER_ADMIN } from "@/services/graphql/queries";
+import { GET_REPORT_WITH_FILTER_ADMIN } from "@/services/graphql/queries";
 
 enum EnumApprove {
   HANDLED = "HANDLED",
@@ -19,7 +19,27 @@ enum EnumApprove {
 }
 
 const ReportPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const template: ReportWithFilter[] = [
+    {
+      id: 1,
+      reportContent: "Thông tin sai lệch",
+      handled: false,
+      postId: 2,
+      postTitle: "Thẻ sinh viên UIT mang tên Nguyễn Văn B",
+      postType: "COLLECT",
+      postLocation: "Thủ đô Hà Nội",
+      postImage: "",
+      postApproved: "ACCEPT",
+      senderId: 9,
+      senderName: "Sang Nguyễn Thanh",
+      senderAvatar:
+        "https://lh3.googleusercontent.com/a/ACg8ocJJkKHhW-Zci8HBW2Ehm7uKWGseBW32CthYEjja5E2bITwt0lw=s96-c",
+      senderEmail: "20521833@gm.uit.edu.vn",
+      createdDate: new Date("2024-06-10"),
+      updatedDate: new Date("2024-06-11"),
+    },
+  ];
+
   const [handleState, setHandleState] = useState(EnumApprove.UNHANDLED);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -28,147 +48,101 @@ const ReportPage = () => {
   const [postStatus, setPostStatus] = useState<string>("all");
 
   const [reports, setReports] = useState<ReportWithFilter[]>([]);
-  const [getReportWithFilter] = useLazyQuery(GET_POST_WITH_FILTER_ADMIN);
+  const [getReportWithFilter] = useLazyQuery(GET_REPORT_WITH_FILTER_ADMIN);
 
   const resetFilters = () => {
     setSearchString("");
     setPostType("all");
     setPostStatus("all");
-
-    if (searchParams.size > 0) {
-      searchParams.delete("search");
-      searchParams.delete("filter");
-
-      setSearchParams(searchParams);
-    }
   };
 
   const handleSearch = async () => {
+    const fetchData = async (
+      filters: any,
+      callback: (data: ReportWithFilter[]) => void
+    ) => {
+      try {
+        const result = await getReportWithFilter({
+          variables: {
+            filters: filters,
+          },
+          fetchPolicy: "network-only",
+        });
+
+        const resultData = result.data.adminGetPostReportWithFilter.data;
+
+        const rList: ReportWithFilter[] = resultData.listData.map(
+          (report: ReportWithFilter) => ({
+            id: report.id,
+            reportContent: report.reportContent,
+            handled: report.handled,
+            postId: report.postId,
+            postTitle: report.postTitle,
+            postType: report.postType,
+            postLocation: report.postLocation,
+            postImage:
+              report.postImage ||
+              "https://0711.vn/assets/images/illustration_11.jpg",
+            postApproved: report.postApproved,
+            senderId: report.senderId,
+            senderName: report.senderName,
+            senderAvatar: report.senderAvatar,
+            senderEmail: report.senderEmail,
+            createdDate: new Date(report.createdDate),
+            updatedDate: new Date(report.updatedDate),
+          })
+        );
+
+        callback(rList);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const filters: any = {
       page: 1,
       pageSize: 10000,
-      handled: handleState,
+      handled: handleState === EnumApprove.HANDLED ? true : false,
       searchKey: searchString,
-      approved: postStatus === "all" ? "" : postStatus,
+      approved: handleState === EnumApprove.HANDLED ? postStatus : "ACCEPT",
     };
+
     if (postType !== "all") {
       filters["postType"] = postType;
     }
 
-    setIsLoading(true);
+    if (postStatus === "all") {
+      setIsLoading(true);
 
-    await getReportWithFilter({
-      variables: {
-        filters: filters,
-      },
-      fetchPolicy: "network-only",
-    })
-      .then((result) => {
-        const resultData = result.data.adminGetPostWithFilter.data;
-
-        const rList: ReportWithFilter[] = resultData.listData.map(
-          (report: ReportWithFilter) => {
-            return {
-              id: report.id,
-              title: report.title,
-              postType: report.postType,
-              location: report.location,
-              locationDetail: report.locationDetail,
-              description: report.description,
-              approved: report.approved,
-              viewCount: report.viewCount,
-              totalComments: report.totalComments,
-              fileName: report.fileName ? report.fileName : "",
-              filePath: report.filePath ? report.filePath : "",
-              createdDate: new Date(report.createdDate),
-              updatedDate: new Date(report.updatedDate),
-            };
-          }
-        );
-
-        setReports(rList);
-      })
-      .catch((error) => {
-        console.log(error);
+      filters["approved"] = "ACCEPT";
+      await fetchData(filters, (data) => {
+        setReports(data);
       });
 
-    setIsLoading(false);
-  };
-
-  const queryPostWithFilters = async (filters: any) => {
-    setIsLoading(true);
-
-    await getReportWithFilter({
-      variables: {
-        filters: filters,
-      },
-      fetchPolicy: "network-only",
-    })
-      .then((result) => {
-        console.log("result: ", result);
-        // const returnedData = result.data.adminGetPostWithFilter.data;
-        const returnedData = result.data.adminGetPostWithFilter.data;
-
-        const rList: ReportWithFilter[] = returnedData?.listData.map(
-          (report: ReportWithFilter) => {
-            return {
-              id: report.id,
-              title: report.title,
-              postType: report.postType,
-              location: report.location,
-              locationDetail: report.locationDetail,
-              description: report.description,
-              approved: report.approved,
-              viewCount: report.viewCount,
-              totalComments: report.totalComments,
-              fileName: report.fileName ? report.fileName : "",
-              filePath: report.filePath ? report.filePath : "",
-              createdDate: new Date(report.createdDate),
-              updatedDate: new Date(report.updatedDate),
-            };
-          }
+      filters["approved"] = "HIDDEN";
+      await fetchData(filters, (data) => {
+        setReports((prev) =>
+          [...prev, ...data].sort(
+            (a, b) => b.createdDate.getTime() - a.createdDate.getTime()
+          )
         );
-
-        setReports(rList);
-      })
-      .catch((error) => {
-        console.log(error);
       });
 
-    setIsLoading(false);
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+
+      await fetchData(filters, (data) => {
+        setReports(data);
+      });
+
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    if (searchParams.size > 0) {
-      const filters: any = {
-        page: 1,
-        pageSize: 10000,
-        handled: handleState ? handleState : "NOT_YET",
-      };
-
-      if (searchParams.get("search")) {
-        setSearchString(searchParams.get("search") as string);
-        filters["searchKey"] = searchParams.get("search");
-      }
-
-      if (searchParams.get("filter")) {
-        switch (searchParams.get("filter")) {
-          case "lost":
-            setPostType("LOST");
-            filters["postType"] = "LOST";
-            break;
-          case "collect":
-            setPostType("COLLECT");
-            filters["postType"] = "COLLECT";
-            break;
-        }
-      }
-
-      queryPostWithFilters(filters);
-    } else {
-      handleSearch();
-    }
-  }, [searchParams, handleState]);
+    handleSearch();
+  }, [handleState]);
 
   return (
     <div className="flex flex-col justify-center items-center gap-4">
@@ -266,25 +240,29 @@ const ReportPage = () => {
             </div>
           </RadioGroup>
 
-          <RadioGroup
-            value={postStatus}
-            onValueChange={(value: string) => setPostStatus(value)}
-            className="xl:w-1/5 lg:w-1/4"
-          >
-            <p className="font-semibold text-lg">Trạng thái tin</p>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="status-all" />
-              <Label htmlFor="status-all">Tất cả</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="ACCEPT" id="status-accept" />
-              <Label htmlFor="status-accept">Tin đã duyệt</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="REJECT" id="status-reject" />
-              <Label htmlFor="status-reject">Tin đã hủy</Label>
-            </div>
-          </RadioGroup>
+          {handleState === EnumApprove.HANDLED ? (
+            <RadioGroup
+              value={postStatus}
+              onValueChange={(value: string) => setPostStatus(value)}
+              className="xl:w-1/5 lg:w-1/4"
+            >
+              <p className="font-semibold text-lg">Trạng thái tin</p>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="all" id="status-all" />
+                <Label htmlFor="status-all">Tất cả</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="ACCEPT" id="status-accept" />
+                <Label htmlFor="status-accept">Tin đã duyệt</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="HIDDEN" id="status-hidden" />
+                <Label htmlFor="status-hidden">Tin đã ẩn</Label>
+              </div>
+            </RadioGroup>
+          ) : (
+            <></>
+          )}
         </div>
 
         <div className="w-full flex xl:justify-end justify-center items-center">
