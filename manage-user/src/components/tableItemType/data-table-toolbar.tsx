@@ -30,22 +30,7 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        <div className="flex gap-x-2">
-          {table.getColumn("activate") && (
-            <DataTableFacetedFilter
-              column={table.getColumn("activate")}
-              title="Trạng thái"
-              options={statuses}
-            />
-          )}
-          {/* {table.getColumn("updatedDate") && (
-            <DataTableFacetedFilter
-              column={table.getColumn("updatedDate")}
-              title="Thời gian"
-              options={times}
-            />
-          )} */}
-        </div>
+
         {isFiltered && (
           <Button
             variant="ghost"
@@ -57,6 +42,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
+
       <DataTableViewOptions table={table} />
     </div>
   );
