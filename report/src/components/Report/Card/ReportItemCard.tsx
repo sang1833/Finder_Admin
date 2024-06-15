@@ -10,7 +10,6 @@ import {
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { format } from "date-fns";
 
 const ReportItemCard = ({ report }: ReportItemCardProps) => {
@@ -73,7 +72,7 @@ const ReportItemCard = ({ report }: ReportItemCardProps) => {
         <CardContent className="flex items-center gap-4">
           <img
             className="w-[40px] h-[40px] rounded-full overflow-auto object-cover"
-            src="https://i.ibb.co/xJQ1mfH/scene.png"
+            src={report.senderAvatar}
             alt="Avatar"
           />
           <div>

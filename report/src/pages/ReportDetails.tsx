@@ -22,14 +22,16 @@ const ReportDetails = () => {
       variables: {
         id: Number(reportId),
       },
+      fetchPolicy: "network-only",
     })
       .then((result) => {
-        const resultData = result.data.getPostById.data;
-
+        const resultData = result.data.getPostReportById.data;
         const rData: ReportDetail = {
           id: resultData.id,
           reportContent: resultData.reportContent,
           handled: resultData.handled,
+          postId: resultData.postId,
+          senderId: resultData.senderId,
           createdDate: resultData.createdDate,
           updatedDate: resultData.updatedDate,
         };
@@ -64,7 +66,7 @@ const ReportDetails = () => {
         </button>
       </div>
 
-      {isLoading ? (
+      {isLoading === true || !report ? (
         <div className="w-full flex justify-center items-center">
           <LargeSpinner />
         </div>
