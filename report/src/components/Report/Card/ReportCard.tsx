@@ -322,7 +322,7 @@ export default function ReportCard({
                   },
                   fontWeight: "bold",
                 }}
-                onClick={handleReport(true)}
+                onClick={handleReport(false)}
                 disabled={loading}
               >
                 {"Hiện bài đăng"}
