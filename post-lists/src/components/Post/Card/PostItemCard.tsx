@@ -32,6 +32,10 @@ const PostItemCard = ({ post }: PostItemCardProps) => {
       approvalText.text = "Từ chối";
       approvalText.color = "text-red-500 border border-red-500";
       break;
+    case "HIDDEN":
+      approvalText.text = "Đã ẩn";
+      approvalText.color = "text-black border border-black";
+      break;
   }
 
   return (
