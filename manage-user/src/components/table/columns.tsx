@@ -171,7 +171,7 @@ export const columns: ColumnDef<UserInfo>[] = [
   {
     accessorKey: "lastLogin",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Lần đăng nhập cuối" />
+      <DataTableColumnHeader column={column} title="Đăng nhập cuối" />
     ),
     cell: ({ row }) => {
       // const priority = priorities.find(

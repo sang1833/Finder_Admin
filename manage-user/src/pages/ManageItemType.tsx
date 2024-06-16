@@ -47,7 +47,7 @@ const ManageItemTypePage = () => {
   return (
     <div className="flex flex-col">
       <div className="w-full flex justify-start">
-        <h1 className="py-4 font-bold text-2xl">Danh sách loại bài đăng</h1>
+        <h1 className="py-4 font-bold text-2xl">Danh sách danh mục</h1>
       </div>
       {loading && (
         <div className="w-full flex justify-center items-center animate-spin">
