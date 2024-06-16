@@ -64,6 +64,10 @@ export default function PostCard({ post, setIsReset }: PostCardProps) {
       approvalText.text = "Từ chối";
       approvalText.color = "text-red-500 border border-red-500";
       break;
+    case "HIDDEN":
+      approvalText.text = "Đã ẩn";
+      approvalText.color = "text-black border border-black";
+      break;
   }
 
   useEffect(() => {
@@ -310,10 +314,12 @@ export default function PostCard({ post, setIsReset }: PostCardProps) {
         <div className="absolute right-2 z-50">
           {
             <Stack spacing={2} direction="row">
-              {(post?.approved === null || post?.approved === "REJECT") && (
+              {(post?.approved === null ||
+                post?.approved === "REJECT" ||
+                post?.approved === "HIDDEN") && (
                 <Button
                   variant="contained"
-                  sx={{ backgroundColor: "hsl(222.2 47.4% 11.2%)" }}
+                  // sx={{ backgroundColor: "hsl(222.2 47.4% 11.2%)" }}
                   onClick={handleApprovedPost("ACCEPT")}
                   disabled={loading}
                 >

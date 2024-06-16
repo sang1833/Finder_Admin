@@ -15,7 +15,7 @@ import { GET_REPORT_WITH_FILTER_ADMIN } from "@/services/graphql/queries";
 
 enum EnumApprove {
   HANDLED = "HANDLED",
-  UNHANDLED = "UNHANDLED",
+  UNHANDLED = "UNHANDLED"
 }
 
 const ReportPage = () => {
@@ -36,8 +36,8 @@ const ReportPage = () => {
         "https://lh3.googleusercontent.com/a/ACg8ocJJkKHhW-Zci8HBW2Ehm7uKWGseBW32CthYEjja5E2bITwt0lw=s96-c",
       senderEmail: "20521833@gm.uit.edu.vn",
       createdDate: new Date("2024-06-10"),
-      updatedDate: new Date("2024-06-11"),
-    },
+      updatedDate: new Date("2024-06-11")
+    }
   ];
 
   const [handleState, setHandleState] = useState(EnumApprove.UNHANDLED);
@@ -64,9 +64,9 @@ const ReportPage = () => {
       try {
         const result = await getReportWithFilter({
           variables: {
-            filters: filters,
+            filters: filters
           },
-          fetchPolicy: "network-only",
+          fetchPolicy: "network-only"
         });
 
         const resultData = result.data.adminGetPostReportWithFilter.data;
@@ -89,7 +89,7 @@ const ReportPage = () => {
             senderAvatar: report.senderAvatar,
             senderEmail: report.senderEmail,
             createdDate: new Date(report.createdDate),
-            updatedDate: new Date(report.updatedDate),
+            updatedDate: new Date(report.updatedDate)
           })
         );
 
@@ -104,7 +104,7 @@ const ReportPage = () => {
       pageSize: 10000,
       handled: handleState === EnumApprove.HANDLED ? true : false,
       searchKey: searchString,
-      approved: handleState === EnumApprove.HANDLED ? postStatus : "ACCEPT",
+      approved: handleState === EnumApprove.HANDLED ? postStatus : "ACCEPT"
     };
 
     if (postType !== "all") {

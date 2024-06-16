@@ -31,7 +31,7 @@ enum EnumApprove {
   ACCEPT = "ACCEPT",
   REJECT = "REJECT",
   NOT_YET = "NOT_YET",
-  HIDE = "HIDE"
+  HIDDEN = "HIDDEN"
 }
 
 const PostResultList = () => {
@@ -284,10 +284,10 @@ const PostResultList = () => {
               <p>Đã huỷ</p>
             </ToggleGroupItem>
             <ToggleGroupItem
-              value={EnumApprove.HIDE}
-              aria-label={`Toggle ${EnumApprove.HIDE}`}
+              value={EnumApprove.HIDDEN}
+              aria-label={`Toggle ${EnumApprove.HIDDEN}`}
               className={
-                approvedState === EnumApprove.HIDE
+                approvedState === EnumApprove.HIDDEN
                   ? "data-[state=on]:bg-black data-[state=on]:text-white"
                   : ""
               }
