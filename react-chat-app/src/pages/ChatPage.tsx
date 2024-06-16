@@ -179,13 +179,13 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="w-full h-[calc(100%-60px)] text-black flex">
+    <div className="w-full h-full text-black flex">
       {/* Main Panel */}
       <div className="w-3/4">
         {/* Chat Header */}
         <ChatHeader avatar={userPartner?.avatar} displayName={userPartner?.displayName} />
         {/* Main Chat */}
-        <div id="chat-scrollable" className="h-[calc(100%-60px-120px)] p-5 overflow-y-scroll flex flex-col-reverse">
+        <div id="chat-scrollable" className="h-[calc(100vh-74px-60px-120px)] p-5 overflow-y-scroll flex flex-col-reverse">
           <InfiniteScroll
             dataLength={detailConversationData.length}
             next={loadMoreConversationData}
