@@ -6,7 +6,6 @@ main {
 }
 
 .body_container {
-  padding-left: 72px;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -16,7 +15,6 @@ main {
 .content {
   height: calc(100vh - 73px);
   width: 100%;
-  overflow-y: scroll;
-  overflow-x: scroll;
-  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
 }
