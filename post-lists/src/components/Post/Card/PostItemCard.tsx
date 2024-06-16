@@ -37,10 +37,10 @@ const PostItemCard = ({ post }: PostItemCardProps) => {
   return (
     <Card
       className={cn(
-        "w-full h-max rounded-xl flex sm:flex-row flex-col shadow-md"
+        "w-full h-max rounded-xl flex flex-row max-w-[640px]:flex-col shadow-md"
       )}
     >
-      <div className="md:w-2/12 sm:w-4/12 flex justify-center items-center overflow-hidden cursor-pointer rounded-tl-xl sm:rounded-bl-xl sm:rounded-tr-none rounded-bl-none rounded-tr-xl">
+      <div className="md:w-2/12 w-[640px]:w-4/12 flex justify-center items-center overflow-hidden cursor-pointer rounded-tl-xl w-[640px]:rounded-bl-xl w-[640px]:rounded-tr-none rounded-bl-none rounded-tr-xl">
         <img
           src={
             post.filePath
@@ -53,7 +53,7 @@ const PostItemCard = ({ post }: PostItemCardProps) => {
           onClick={() => navigate("post-details/" + post.id)}
         />
       </div>
-      <div className="md:w-10/12 sm:w-8/12 justify-center items-center">
+      <div className="md:w-10/12 w-[640px]:w-8/12 justify-center items-center">
         <CardHeader>
           <CardTitle
             onClick={() => navigate("post-details/" + post.id)}
@@ -79,7 +79,7 @@ const PostItemCard = ({ post }: PostItemCardProps) => {
         </CardContent>
         <CardFooter
           className={cn(
-            "flex justify-between sm:items-center items-end sm:flex-row flex-col"
+            "flex justify-between w-[640px]:items-center items-end w-[640px]:flex-row flex-col"
           )}
         >
           <div className="flex justify-center items-center">

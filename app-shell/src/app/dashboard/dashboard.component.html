@@ -1,4 +1,7 @@
 <main>
+  <section class="header">
+    <app-header></app-header>
+  </section>
   <section class="sidebar_app">
     <app-sidebar></app-sidebar>
   </section>
@@ -8,11 +11,14 @@
       (sidebarService.isSidebarOpen$ | async) ? '260px' : '72px'
     "
   >
-    <section>
-      <app-header></app-header>
-    </section>
     <section class="content">
       <router-outlet></router-outlet>
     </section>
   </section>
 </main>
+
+<!-- [style.width]="
+        (sidebarService.isSidebarOpen$ | async)
+          ? 'calc(100vw - 260px)'
+          : 'calc(100vw - 72px)'
+      " -->
