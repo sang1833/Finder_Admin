@@ -275,17 +275,17 @@ export default function ReportCard({
                   <Button
                     variant="outlined"
                     sx={{
-                      color: "hsl(134, 100%, 66%)",
-                      borderColor: "hsl(134, 100%, 66%)",
+                      color: "hsl(0 80% 50%)",
+                      borderColor: "hsl(0 80% 50%)",
                       "&:hover": {
-                        borderColor: "hsl(134, 100%, 66%)",
+                        borderColor: "hsl(0 80% 50%)",
                       },
                       fontWeight: "bold",
                     }}
                     onClick={handleReport(false)}
                     disabled={loading}
                   >
-                    {"Hợp lệ"}
+                    {"Bỏ qua"}
                   </Button>
                 </Stack>
               }
