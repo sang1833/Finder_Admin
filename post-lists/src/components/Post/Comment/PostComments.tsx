@@ -1,22 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
 import Typography from "@mui/joy/Typography";
 import Link from "@mui/joy/Link";
 import CardMUIContent from "@mui/joy/CardContent";
 import Input from "@mui/joy/Input";
+import React, { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_COMMENTS } from "@/services/graphql/queries";
 import { useParams } from "react-router-dom";
 
 import Spinner from "../../Spinner";
-import LoadingDots from "../../LoadingDots";
-import { ADD_COMMENT } from "@/services/graphql/mutations";
 import CommentItem from "./CommentItem";
+import LoadingDots from "@/components/LoadingDots";
+import { ADD_COMMENT } from "@/services/graphql/mutations";
 
 const PostComments = () => {
   const { postId } = useParams();
-  // const signedInUser = useAtomValue( AtomWithPersistence);
   const signedInUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +30,7 @@ const PostComments = () => {
   const [addComment] = useMutation(ADD_COMMENT, {
     context: {
       headers: {
-        Authorization: `Bearer ${signedInUser?.accessToken}`
+        Authorization: `Bearer ${signedInUser.accessToken}`
       }
     }
   });
@@ -44,8 +43,8 @@ const PostComments = () => {
     setVisibleComments(3);
   };
 
-  const handleGetPostComments = async () => {
-    setIsLoading(true);
+  const handleGetPostComments = async (load: boolean) => {
+    if (load) setIsLoading(true);
 
     await getPostComments({
       variables: {
@@ -54,7 +53,8 @@ const PostComments = () => {
           page: 1,
           pageSize: visibleComments
         }
-      }
+      },
+      fetchPolicy: "network-only"
     })
       .then((result) => {
         const resultData = result.data.getComments.data;
@@ -69,22 +69,20 @@ const PostComments = () => {
             avatar: comment.avatar,
             isEdited: comment.isEdited,
             content: comment.content,
-            createdDate: comment.createdDate,
-            updatedDate: comment.updatedDate,
+            createdDate: new Date(comment.createdDate),
+            updatedDate: new Date(comment.updatedDate),
             subComments: comment.subComments
           };
         });
 
-        console.log("cList:", cList);
-
-        setComments(cList);
+        setComments(cList.reverse());
         setTotalComments(resultData.totalCount);
       })
       .catch((error) => {
         console.log(error);
       });
 
-    setIsLoading(false);
+    if (load) setIsLoading(false);
   };
 
   const handleAddComment = async () => {
@@ -99,6 +97,7 @@ const PostComments = () => {
       })
         .then(() => {
           setCommentValue("");
+          handleGetPostComments(false);
         })
         .catch((error) => {
           console.log(error);
@@ -108,7 +107,7 @@ const PostComments = () => {
 
   useEffect(() => {
     if (postId) {
-      handleGetPostComments();
+      handleGetPostComments(true);
     }
   }, [postId, visibleComments]);
 
@@ -125,6 +124,7 @@ const PostComments = () => {
                 comment={comment}
                 postId={Number(postId)}
                 level={1}
+                getComments={handleGetPostComments}
               />
             ))}
 

@@ -160,6 +160,14 @@ interface CommentItemProps {
   postId: number;
   comment: Comment;
   level: number;
+  getComments: (load: boolean) => Promise<void>;
+}
+
+interface CommentDropdownProps {
+  signedInUser: SignedInUser;
+  commentId: number;
+  getComments: (load: boolean) => Promise<void>;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface Comment {

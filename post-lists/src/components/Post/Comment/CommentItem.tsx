@@ -1,54 +1,48 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from "react";
 import Avatar from "@mui/joy/Avatar";
 import Typography from "@mui/joy/Typography";
 import Input from "@mui/joy/Input";
 import Link from "@mui/joy/Link";
+import React, { useState } from "react";
 import Box from "@mui/joy/Box";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, subHours } from "date-fns";
 import { vi } from "date-fns/locale";
-import LoadingDots from "../../LoadingDots";
+import LoadingDots from "@/components/LoadingDots";
 import { useMutation } from "@apollo/client";
-import { REPLY_COMMENT } from "@/services/graphql/mutations";
-import { UTCDate } from "@date-fns/utc";
+import { EDIT_COMMENT, REPLY_COMMENT } from "@/services/graphql/mutations";
+import CommentDropdownMenu from "./CommentDropdownMenu";
 
-const CommentItem = ({ comment, postId, level }: CommentItemProps) => {
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import { toast } from "sonner";
+
+const CommentItem = ({
+  comment,
+  postId,
+  level,
+  getComments
+}: CommentItemProps) => {
   const commentLevel = level;
-  //get signedInUser from local storage
-  let currentDate = new Date(comment.createdDate);
-  currentDate.setHours(currentDate.getHours() - 7);
   const signedInUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   const [replyValue, setReplyValue] = useState("");
   const [showReply, setShowReply] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [isTyping, _setIsTyping] = useState(false);
-
-  useEffect(() => {
-    console.log(
-      "CommentItem rendered",
-      comment.displayName,
-      "time:",
-      comment?.createdDate
-        ? new UTCDate(comment.createdDate).toString()
-        : new UTCDate().toString(),
-      "formatted time:",
-      formatDistanceToNow(
-        comment?.createdDate
-          ? new UTCDate(comment.createdDate).toString()
-          : new UTCDate().toString(),
-        {
-          addSuffix: true,
-          locale: vi
-        }
-      ).toString()
-    );
-  }, []);
+  const [isEditing, setIsEditing] = useState(false);
+  const [commentValue, setCommentValue] = useState(comment?.content);
 
   const [replyComment] = useMutation(REPLY_COMMENT, {
     context: {
       headers: {
-        Authorization: `Bearer ${signedInUser?.accessToken}`
+        Authorization: `Bearer ${signedInUser.accessToken}`
+      }
+    }
+  });
+  const [editComment] = useMutation(EDIT_COMMENT, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${signedInUser.accessToken}`
       }
     }
   });
@@ -66,11 +60,42 @@ const CommentItem = ({ comment, postId, level }: CommentItemProps) => {
       })
         .then(() => {
           setReplyValue("");
+          setShowReply(true);
+          setShowReplyInput(false);
+          getComments(false);
         })
         .catch((error) => {
           console.log(error);
         });
     }
+  };
+
+  const handleEditComment = async () => {
+    try {
+      if (commentValue) {
+        await editComment({
+          variables: {
+            commentId: comment?.id,
+            bodyReq: {
+              content: commentValue
+            }
+          }
+        });
+
+        getComments(false);
+        setIsEditing(false);
+        toast.success("Chỉnh sửa phản hồi thành công");
+      } else {
+        toast.error("Nội dung phản hồi không được để trống");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCancelEditComment = () => {
+    setIsEditing(false);
+    setCommentValue(comment?.content);
   };
 
   return (
@@ -100,7 +125,18 @@ const CommentItem = ({ comment, postId, level }: CommentItemProps) => {
       </Box>
 
       <div className="flex flex-col">
-        <div className="flex flex-col px-4 py-2 bg-slate-100 rounded-xl">
+        <div className="w-max flex flex-col pl-4 pr-8 py-2 bg-slate-100 rounded-xl relative">
+          {comment?.senderId === signedInUser.id && (
+            <div className="absolute top-0 right-0 pr-1">
+              <CommentDropdownMenu
+                signedInUser={signedInUser}
+                commentId={comment?.id}
+                getComments={getComments}
+                setIsEditing={setIsEditing}
+              />
+            </div>
+          )}
+
           <Typography fontSize="sm" fontFamily="Montserrat">
             <Link
               component="button"
@@ -113,17 +149,54 @@ const CommentItem = ({ comment, postId, level }: CommentItemProps) => {
             </Link>
           </Typography>
 
-          <Typography fontSize="sm" fontFamily="Montserrat">
-            <Link
-              color="neutral"
-              fontFamily="Montserrat"
-              textColor="text.primary"
-              textAlign="left"
-              underline="none"
-            >
-              {comment?.content}
-            </Link>
-          </Typography>
+          {isEditing ? (
+            <div className="flex justify-around items-center gap-1">
+              <Input
+                variant="plain"
+                size="sm"
+                placeholder="Nhập phản hồi..."
+                sx={{
+                  flex: 1,
+                  "--Input-focusedThickness": "0px",
+                  fontFamily: "Montserrat"
+                }}
+                value={commentValue}
+                onChange={(event) => setCommentValue(event.target.value)}
+              />
+              <div className="flex gap-1">
+                <Link
+                  underline="none"
+                  role="button"
+                  fontFamily="Montserrat"
+                  fontWeight={600}
+                  onClick={handleEditComment}
+                >
+                  <CheckCircleOutlineOutlinedIcon sx={{ color: "green" }} />
+                </Link>
+                <Link
+                  underline="none"
+                  role="button"
+                  fontFamily="Montserrat"
+                  fontWeight={600}
+                  onClick={handleCancelEditComment}
+                >
+                  <CancelOutlinedIcon sx={{ color: "red" }} />
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <Typography fontSize="sm" fontFamily="Montserrat">
+              <Link
+                color="neutral"
+                fontFamily="Montserrat"
+                textColor="text.primary"
+                textAlign="left"
+                underline="none"
+              >
+                {comment?.content}
+              </Link>
+            </Typography>
+          )}
         </div>
 
         <div className="flex gap-2">
@@ -135,12 +208,14 @@ const CommentItem = ({ comment, postId, level }: CommentItemProps) => {
             sx={{ color: "text.tertiary", my: 0.5 }}
           >
             {formatDistanceToNow(
-              comment?.createdDate ? currentDate : new UTCDate().toString(),
+              comment?.createdDate
+                ? subHours(comment.createdDate, 7)
+                : new Date(),
               {
                 addSuffix: true,
                 locale: vi
               }
-            ).toString()}
+            )}
           </Link>
 
           {commentLevel < 3 && signedInUser.accessToken && (
@@ -180,12 +255,13 @@ const CommentItem = ({ comment, postId, level }: CommentItemProps) => {
             </Link>
 
             {showReply &&
-              comment.subComments.map((comment: Comment, index: number) => (
+              comment.subComments.map((item: Comment, index: number) => (
                 <CommentItem
                   key={index}
-                  comment={comment}
+                  comment={item}
                   postId={postId}
                   level={commentLevel + 1}
+                  getComments={getComments}
                 />
               ))}
           </>

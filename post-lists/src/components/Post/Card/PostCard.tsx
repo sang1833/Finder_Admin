@@ -323,7 +323,9 @@ export default function PostCard({ post, setIsReset }: PostCardProps) {
                   onClick={handleApprovedPost("ACCEPT")}
                   disabled={loading}
                 >
-                  {"Duyệt bài đăng"}
+                  {post?.approved === "REJECT"
+                    ? "Duyệt lại bài đăng"
+                    : "Duyệt bài đăng"}
                 </Button>
               )}
               {(post?.approved === null || post?.approved === "ACCEPT") && (
@@ -337,6 +339,21 @@ export default function PostCard({ post, setIsReset }: PostCardProps) {
                   disabled={loading}
                 >
                   {"Huỷ bài đăng"}
+                </Button>
+              )}
+              {(post?.approved === null ||
+                post?.approved === "ACCEPT" ||
+                post?.approved === "REJECT") && (
+                <Button
+                  variant="outlined"
+                  sx={{
+                    color: "black",
+                    borderColor: "black"
+                  }}
+                  onClick={handleApprovedPost("HIDDEN")}
+                  disabled={loading}
+                >
+                  {"Ẩn bài đăng"}
                 </Button>
               )}
             </Stack>
