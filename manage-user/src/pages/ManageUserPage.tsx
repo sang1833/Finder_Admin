@@ -18,7 +18,7 @@ const ManageUserPage = () => {
   async function handleGetUserList() {
     const variables = {
       filters: {
-        pageSize: 10,
+        pageSize: 100,
         page: 1
       }
     };
