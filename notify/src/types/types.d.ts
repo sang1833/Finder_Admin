@@ -17,6 +17,7 @@ interface NotificationDropdownProps {
   signedInUser: SignedInUser;
   notifications: INotification[];
   handleGetAllNotifications: () => Promise<void>;
+  handleGetNotifyUnread: () => Promise<void>;
   notifySocket: Socket | null;
 }
 interface NotificationDropdownItemProps {
@@ -71,9 +72,23 @@ interface CommentNotification {
   timestamp: Date;
   type: string;
 }
+interface NotifyNewPostResDto {
+  postId: number;
+  postTitle: string;
+  senderId: number;
+  senderName: string;
+  senderAvatar: string;
+}
+interface NotifyPostReportResDto {
+  postId: number;
+  postTitle: string;
+  senderId: number;
+  senderName: string;
+  senderAvatar: string;
+  reportContent: string;
+}
 interface PostNotification {
   id: number;
-  approved: string;
   isRead: boolean;
   postId: number;
   postTitle: string;
@@ -82,6 +97,7 @@ interface PostNotification {
 }
 
 interface ReportNotification {
+  id: number;
   postId: number;
   postTitle: string;
   type: string;
@@ -91,7 +107,6 @@ interface ReportNotification {
   reportContent: string;
   timestamp: string;
   isRead: boolean;
-  id: number;
 }
 
 type INotification = ReportNotification | PostNotification;

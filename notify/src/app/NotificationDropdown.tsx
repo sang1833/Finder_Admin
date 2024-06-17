@@ -51,26 +51,17 @@ const NotificationDropdownItem = ({
       } catch (error) {
         console.log(error);
       } finally {
-        if (
-          notification.type === "NEW_POST_REPORT" ||
-          notification.type === "NEW_POST"
-        ) {
-          console.log(
-            `Navigating to post details...http:/localhost:4200/dashboard/post-details/${notification.postId}`
-          );
-          window.location.href = `http:/localhost:4200/dashboard/post/post-details/${notification.postId}`;
-        } else {
-          window.location.href = `http:/localhost:4200/dashboard/report/report-details/${notification.postId}`;
+        if (notification.type === "NEW_POST") {
+          window.location.href = `dashboard/posts`;
+        } else if (notification.type === "NEW_POST_REPORT") {
+          window.location.href = `dashboard/report`;
         }
       }
     } else {
-      if (
-        notification.type === "NEW_POST_REPORT" ||
-        notification.type === "NEW_POST"
-      ) {
-        window.location.href = `http:/localhost:4200/dashboard/post/post-details/${notification.postId}`;
-      } else {
-        window.location.href = `http:/localhost:4200/dashboard/report/report-details/${notification.postId}`;
+      if (notification.type === "NEW_POST") {
+        window.location.href = `dashboard/posts`;
+      } else if (notification.type === "NEW_POST_REPORT") {
+        window.location.href = `dashboard/report`;
       }
     }
   };
@@ -134,8 +125,33 @@ const NotificationDropdown = ({
   signedInUser,
   notifications,
   handleGetAllNotifications,
+  handleGetNotifyUnread,
   notifySocket
 }: NotificationDropdownProps) => {
+  useEffect(() => {
+    if (signedInUser.accessToken) {
+      handleGetNotifyUnread();
+      handleGetAllNotifications();
+    }
+
+    if (!notifySocket) {
+      return;
+    }
+
+    notifySocket.on("notifyNewPost", async () => {
+      console.log("New post notification received");
+      handleGetNotifyUnread();
+      handleGetAllNotifications();
+    });
+
+    // Listen to report
+    notifySocket.on("notifyNewPostReport", async () => {
+      console.log("Reply post report notification received");
+      handleGetNotifyUnread();
+      handleGetAllNotifications();
+    });
+  }, [notifySocket]);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>

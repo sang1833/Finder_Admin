@@ -31,6 +31,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
+        path: 'post/post-details/:postId',
+        component: PostAppComponent,
+        canActivate: [AuthGuard],
+      },
+      {
         path: 'chat',
         component: ChatAppComponent,
         canActivate: [AuthGuard],

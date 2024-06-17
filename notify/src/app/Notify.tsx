@@ -6,7 +6,7 @@ import {
   GET_NOTIFY_WITH_FILTER,
   GET_NOTIFY_UNREAD
 } from "@/services/graphql/queries";
-import CheckResetToken from "./CheckResetToken";
+import useIsTabActive from "./IsTabActive";
 
 const Notify = () => {
   const signedInUser = JSON.parse(localStorage.getItem("user") || "{}");
@@ -14,6 +14,7 @@ const Notify = () => {
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [notifySocket, setNotifySocket] = useState<Socket | null>(null);
   const [notiyCount, setNotifyCount] = useState(0);
+  const isTabActive = useIsTabActive();
   const [getNotifyUnread] = useLazyQuery(GET_NOTIFY_UNREAD, {
     context: {
       fetchPolicy: "network-only"
@@ -32,13 +33,20 @@ const Notify = () => {
 
   const handleGetNotifyUnread = async () => {
     try {
-      const { data } = await getNotifyUnread();
+      const { data } = await getNotifyUnread({
+        fetchPolicy: "network-only"
+      });
       const resultData = data.getNumberOfNotifyUnRead.data;
+      console.log("resultData", resultData.unRead);
       setNotifyCount(resultData.unRead);
     } catch (error) {
       console.log(error);
     }
   };
+
+  // useEffect(() => {
+  //   console.log("notify count", notiyCount);
+  // }, [notiyCount]);
 
   const handleGetAllNotifications = async () => {
     setIsLoading(true);
@@ -55,15 +63,15 @@ const Notify = () => {
       });
       const resultData = data.getNotifyWithFilter.data;
 
+      console.log("resultData notify", resultData);
+
       const nList: any[] = resultData.listData.map((item: any) => {
         if (item.type === "NEW_POST_REPORT" || item.type === "NEW_POST") {
           return {
             id: item.id,
-            commentId: item.commentId,
+            postId: item.postId,
             content: item.content,
             isRead: item.isRead,
-            parentCommentId: item.parentCommentId,
-            postId: item.postId,
             postTitle: item.postTitle,
             senderAvatar: item.senderAvatar,
             senderId: item.senderId,
@@ -93,21 +101,31 @@ const Notify = () => {
   };
 
   useEffect(() => {
-    console.log("Socket connected");
-
     if (signedInUser.accessToken) {
-      const socket: Socket = io(
-        process.env.VITE_SOCKET_NOTIFY_URL || "http://localhost:5000/notify",
-        {
-          transports: ["websocket"]
-        }
-      );
+      const socket: Socket = io("http://localhost:5000/notify", {
+        transports: ["websocket"]
+      });
       setNotifySocket(socket);
       console.log("Socket connected");
 
       // Register user to Socket Server
       socket.emit("register", signedInUser.id.toString());
 
+      socket.on("notifyNewPost", async (payload: NotifyNewPostResDto) => {
+        console.log("New post notification received", payload);
+        handleGetNotifyUnread();
+        handleGetAllNotifications();
+      });
+
+      // Listen to report
+      socket.on(
+        "notifyNewPostReport",
+        async (payload: NotifyPostReportResDto) => {
+          console.log("Reply post report notification received", payload);
+          handleGetNotifyUnread();
+          handleGetAllNotifications();
+        }
+      );
       return () => {
         socket.disconnect();
       };
@@ -115,33 +133,11 @@ const Notify = () => {
   }, []);
 
   useEffect(() => {
-    if (signedInUser.accessToken) {
-      handleGetAllNotifications();
+    if (isTabActive) {
       handleGetNotifyUnread();
+      handleGetAllNotifications();
     }
-
-    // Listen to new post
-    if (notifySocket) {
-      notifySocket.on(
-        "notifyNewPost",
-        async (_payload: NewCommentNotificationSocket) => {
-          console.log("New post notification received");
-          handleGetNotifyUnread();
-          handleGetAllNotifications();
-        }
-      );
-
-      // Listen to report
-      notifySocket.on(
-        "notifyNewPostReport",
-        async (_payload: ReplyCommentNotificationSocket) => {
-          console.log("Reply post report notification received");
-          handleGetNotifyUnread();
-          handleGetAllNotifications();
-        }
-      );
-    }
-  }, [notifySocket]);
+  }, [isTabActive]);
 
   return (
     <div className="w-full h-full flex justify-center items-center gap-2">
@@ -157,9 +153,9 @@ const Notify = () => {
           notifications={notifications}
           handleGetAllNotifications={handleGetAllNotifications}
           notifySocket={notifySocket}
+          handleGetNotifyUnread={handleGetNotifyUnread}
         />
       </div>
-      <CheckResetToken />
     </div>
   );
 };
