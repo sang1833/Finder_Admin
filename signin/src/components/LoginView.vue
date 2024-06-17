@@ -2,13 +2,16 @@
   <section class="login-page">
     <div class="login-container">
       <h2>Chào mừng trở lại!</h2>
-      <p v-if="!loginFailed">Hãy nhập email và mật khẩu.</p>
-      <p v-else class="wrong-password">Kiểm tra email hoặc mật khẩu!</p>
+      <p v-if="networkError && loginFailed" class="wrong-password">Lỗi mạng!</p>
+      <p v-else-if="!networkError && loginFailed" class="wrong-password">
+        Kiểm tra email hoặc mật khẩu!
+      </p>
+      <p v-else>Hãy nhập email và mật khẩu.</p>
 
       <form @submit.prevent="handleLogin">
         <input
           v-model="username"
-          type="text"
+          type="email"
           name="email"
           placeholder="Email"
           required
@@ -86,6 +89,7 @@ export default {
       password: "",
       showPassword: false,
       loginFailed: false,
+      networkError: false,
       isLoading: false
     };
   },
@@ -120,12 +124,17 @@ export default {
           data.data.refreshTokenExpired
         );
       } catch (error) {
-        console.log("error", error);
+        console.log("error", error.message);
+        if (error.message.includes("Network")) {
+          this.networkError = true;
+        } else {
+          this.networkError = false;
+        }
         this.loginFailed = true;
         this.isLoading = false;
       } finally {
         this.isLoading = false;
-        window.location.href = "/dashboard";
+        if (!this.loginFailed) window.location.href = "/dashboard";
         // const loginSuccessEvent = new CustomEvent("LOGIN_SUCCESS", {
         //   detail: { loginState: true }
         // });

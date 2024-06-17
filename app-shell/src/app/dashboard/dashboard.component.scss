@@ -8,7 +8,7 @@ main {
 }
 
 .sidebar_app {
-  z-index: 1000;
+  z-index: 3;
   box-sizing: border-box;
 }
 
@@ -16,7 +16,7 @@ main {
   position: fixed;
   width: 100%;
   top: 0;
-  z-index: 800;
+  z-index: 2;
   box-sizing: border-box;
 }
 
@@ -35,5 +35,6 @@ main {
   width: 100%;
   overflow-y: auto;
   overflow-x: auto;
+  z-index: 1;
   box-sizing: border-box;
 }

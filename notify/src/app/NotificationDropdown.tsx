@@ -55,12 +55,22 @@ const NotificationDropdownItem = ({
           notification.type === "NEW_POST_REPORT" ||
           notification.type === "NEW_POST"
         ) {
-          // navigate(`/post-details/${notification.postId}`);
-          // window.location.href = `/dashboard/post-details/${notification.postId}`;
+          console.log(
+            `Navigating to post details...http:/localhost:4200/dashboard/post-details/${notification.postId}`
+          );
+          window.location.href = `http:/localhost:4200/dashboard/post/post-details/${notification.postId}`;
         } else {
-          // navigate(`/my-posts/${notification.postId}`);
-          // window.location.href = `/dashboard/my-posts/${notification.postId}`;
+          window.location.href = `http:/localhost:4200/dashboard/report/report-details/${notification.postId}`;
         }
+      }
+    } else {
+      if (
+        notification.type === "NEW_POST_REPORT" ||
+        notification.type === "NEW_POST"
+      ) {
+        window.location.href = `http:/localhost:4200/dashboard/post/post-details/${notification.postId}`;
+      } else {
+        window.location.href = `http:/localhost:4200/dashboard/report/report-details/${notification.postId}`;
       }
     }
   };
